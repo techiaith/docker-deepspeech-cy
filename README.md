@@ -21,9 +21,10 @@ Yna / *and then*:
 
 ```
 $ make run
-# ./bin/import_paldaruo.py
-# ./bin/run_paldaruo.py
+root@3deb765f2438:/DeepSpeech# ./bin/import_paldaruo.py
 ```
+Bydd hyn yn llwytho'r corpws i lawr o techiaith.cymru . Mae'n 12G mewn maint *
+*This will download the speech corpus from techiaith.cymru. It's 12Gb in size*
 
 
 ## Canlyniadau cychwynol / Initial results
