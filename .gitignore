@@ -1,0 +1,5 @@
+DeepSpeech
+*.csv
+data/*
+homedir/*
+tmp/*
