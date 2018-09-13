@@ -25,6 +25,14 @@ Llwytho i lawr Corpws Paldaruo a'i addasu ar gyfer DeepSpeech
 
 Download Paldaruo Speech Corpus and make it available for DeepSpeech
 
+Usage:
+
+   ./bin/import_paldaruo.py -i <paldaruo_root_dir> -a <alphabet file> -o <csv file>
+
+    <paldaruo_root_dir> - destination folder for paldaruo corpus download
+    <alphabet_file> - flename and path for generated alphabet file  
+    <csv file> - filename and path for generated csv file
+
 © Prifysgol Bangor University
 
 """
@@ -145,15 +153,15 @@ def main(paldaruo_root_dir, csv_file, alphabet_file, **args):
     with codecs.open(alphabet_file, "w", encoding='utf-8') as alphabet_file_out:
         for c in sorted(alphabet):
             alphabet_file_out.write('%s\n' % c) 
-     
+
            
 if __name__ == "__main__":
 
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter)
 
-    parser.add_argument("-i", dest="paldaruo_root_dir", required=True)
-    parser.add_argument("-a", dest="alphabet_file", required=True)
-    parser.add_argument("-o", dest="csv_file", required=True)
+    parser.add_argument("-i", dest="paldaruo_root_dir", default="/data/paldaruo")
+    parser.add_argument("-a", dest="alphabet_file", default="/data/paldaruo/alphabet.txt")
+    parser.add_argument("-o", dest="csv_file", default="/data/paldaruo/deepspeech.csv")
     parser.set_defaults(func=main)
     args = parser.parse_args()
     args.func(**vars(args))

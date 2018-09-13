@@ -16,7 +16,7 @@ build:
 
 clean:
 	docker rmi techiaith/deepspeech
-	#docker rmi mozilla/deepspeech
+	docker rmi mozilla/deepspeech
 	
 stop:
 	docker stop techiaith-deepspeech
