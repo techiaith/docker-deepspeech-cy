@@ -7,7 +7,7 @@ Datblygu creu modelau Mozilla DeepSpeech ar gyfer adnabod lleferydd i'r Gymraeg 
 ## Sut i'w ddefnyddio / How to use
 
 ``` 
-$ git clone https://github.com/dewibtynjones/docker-deepspeech-cy.git
+$ git clone https://github.com/dewibrynjones/docker-deepspeech-cy.git
 $ cd docker-deepspeech-cy
 $ make
 ```
@@ -26,6 +26,26 @@ root@3deb765f2438:/DeepSpeech# ./bin/import_paldaruo.py
 Bydd hyn yn llwytho'r corpws i lawr o techiaith.cymru . Mae'n 12G mewn maint *
 *This will download the speech corpus from techiaith.cymru. It's 12Gb in size*
 
+## Hyfforddi ar gyfer Macsen / Training for Macsen 
+
+Gweler https://techiaith.cymru/macsen
+
+```
+root@3deb765f2438:/DeepSpeech# ./bin/import_testset_macsen.py
+root@3deb765f2438:/DeepSpeech# ./bin/run-macsen.sh
+```
+
+Bydd y gorchmynion hyn yn llwytho lawr corpws profi bach o 4 unigolyn yn darllen holl orchmynion mae Macsen yn ei adnabod. 
+
+*This will download a small test corpus of 4 individuals reading all the commands that the Macsen assistant recognizes*
+
+Mae'r sgriptiau yn prosesu ac yn echdynnu o gorpws Macsen modelau iaith, ffeiliau trie a geirfa. Fe defnyddir yn ogystal fel set datblygu.
+
+*The scripts also process and generate a language model, trie and vocabulary files. It's used in addition as a development set*
+
+
+
+# HEN HANES ~ OUT OF DATE #
 
 ## Canlyniadau cychwynol / Initial results
 
