@@ -17,6 +17,7 @@ build:
 clean:
 	docker rmi techiaith/deepspeech
 	docker rmi mozilla/deepspeech
+	docker rmi nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
 	
 stop:
 	docker stop techiaith-deepspeech

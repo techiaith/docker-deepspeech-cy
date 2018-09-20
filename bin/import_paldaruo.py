@@ -43,23 +43,32 @@ Usage:
 PALDARUO_DATA_URL="https://git.techiaith.bangor.ac.uk/Data-Porth-Technolegau-Iaith/Corpws-Paldaruo"
 PALDARUO_DATA_VERSION="v4.0"
 
+DEFAULT_PALDARUO_DIR = '/data/paldaruo'
+DEFAULT_PALDARUO_ALPHABET = '/data/paldaruo/alphabet.txt'
+DEFAULT_PALDARUO_CSV = '/data/paldaruo/deepspeech.csv'
+
 prompts = {}
+
+def execute_shell(cmd):
+    print('$ %s' % cmd)
+    o = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    for line in o.stdout:
+        print (line.rstrip())
+    print ('')
+
 
 def git_lfs_clone_paldaruo(corpus_dir):
 
     if not os.path.exists(corpus_dir):
         git_lfs_clone_cmd = "git -c http.sslVerify=false lfs clone --branch %s --depth 1 %s %s" % (PALDARUO_DATA_VERSION, PALDARUO_DATA_URL, corpus_dir)
-	print git_lfs_clone_cmd
-        o = subprocess.Popen(shlex.split(git_lfs_clone_cmd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        for line in o.stdout:
-            print line,  
+        execute_shell(git_lfs_clone_cmd)
        
     wav_zips_root = os.path.join(corpus_dir, 'audio', 'wav')
     if os.path.exists(wav_zips_root): 
         for file in os.listdir(os.path.join(wav_zips_root)):
             if file.endswith(".zip"):
                 with zipfile.ZipFile(os.path.join(wav_zips_root,file)) as paldaruo_zipfile:
-                    print file
+                    print (file)
                     paldaruo_zipfile.extractall(corpus_dir)
         
         shutil.rmtree(wav_zips_root) 
@@ -147,7 +156,7 @@ def main(paldaruo_root_dir, csv_file, alphabet_file, **args):
                 transcript = process_transcript(prompts[wavfile.replace(".wav","")])
                 alphabet = alphabet.union(get_alphabet(transcript)) 
                 if downsample_wavfile(filepath):
-                    print filepath, os.path.getsize(filepath), transcript.encode('utf-8') 
+                    print (filepath, os.path.getsize(filepath), transcript.encode('utf-8'))
                     csv_file_out.writerow({'wav_filename':filepath, 'wav_filesize':os.path.getsize(filepath), 'transcript':transcript.encode('utf-8')})
 
     with codecs.open(alphabet_file, "w", encoding='utf-8') as alphabet_file_out:
@@ -159,10 +168,9 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter)
 
-    parser.add_argument("-i", dest="paldaruo_root_dir", default="/data/paldaruo")
-    parser.add_argument("-a", dest="alphabet_file", default="/data/paldaruo/alphabet.txt")
-    parser.add_argument("-o", dest="csv_file", default="/data/paldaruo/deepspeech.csv")
+    parser.add_argument("-i", dest="paldaruo_root_dir", default=DEFAULT_PALDARUO_DIR)
+    parser.add_argument("-a", dest="alphabet_file", default=DEFAULT_PALDARUO_ALPHABET)
+    parser.add_argument("-o", dest="csv_file", default=DEFAULT_PALDARUO_CSV)
     parser.set_defaults(func=main)
     args = parser.parse_args()
     args.func(**vars(args))
-

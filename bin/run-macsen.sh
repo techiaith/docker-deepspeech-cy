@@ -4,9 +4,11 @@ checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save
 
 python -u DeepSpeech.py \
 	--train_files /data/paldaruo/deepspeech.csv \
-	--dev_files /data/paldaruo/deepspeech.csv \
-	--test_files /data/paldaruo/deepspeech.csv \
+        --dev_files /data/testsets/macsen/deepspeech.csv \
+	--test_files /data/testsets/macsen/deepspeech.csv \
 	--alphabet_config_path /data/paldaruo/alphabet.txt \
+        --lm_binary_path /data/testsets/macsen/lm.binary \
+        --lm_trie_path /data/testsets/macsen/trie \
 	--validation_step 5 \
 	--train_batch_size 12 \
 	--dev_batch_size 12 \
