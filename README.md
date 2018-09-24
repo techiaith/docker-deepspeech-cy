@@ -12,9 +12,11 @@ $ cd docker-deepspeech-cy
 $ make
 ```
 Bydd hyn yn achosi i adeiladu amgylchedd docker.
+
 *This will build a docker build environment.*
 
 **D.S.** mae angen [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) ar eich gyfrifiadur (a chardyn â GPUs)
+
 ***N.B.** you will need [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) on your system (and a graphics/GPU card)*
 
 Yna / *and then*:
@@ -24,6 +26,7 @@ $ make run
 root@3deb765f2438:/DeepSpeech# ./bin/import_paldaruo.py
 ```
 Bydd hyn yn llwytho'r corpws i lawr o techiaith.cymru . Mae'n 12G mewn maint *
+
 *This will download the speech corpus from techiaith.cymru. It's 12Gb in size*
 
 ## Hyfforddi ar gyfer Macsen / Training for Macsen 
@@ -45,68 +48,106 @@ Mae'r sgriptiau yn prosesu ac yn echdynnu o gorpws Macsen modelau iaith, ffeilia
 
 
 
-# HEN HANES ~ OUT OF DATE #
-
 ## Canlyniadau cychwynol / Initial results
 
-RHYBYDD : mae angen mwy o waith i ddileu'r negeseuon gwall ac er mwyn wireddu hyfforddi a profi cywir. Hyd yn hyn, mae'r canlyniadau isod ond yn cadarnhau bod y sgriptiau mewnforio yn gweithio. 
+RHYBUDD : mae angen mwy o ddata i wella'r canlyniadau WER ac i gynyddu'r nifer o eiriau a brawddegau a adnabyddir. 
 
-*WARNING : more work is needed to eliminate error messages and for correct training and testing. At this stage, the below results indicate that the import script works.*
+*WARNING : more data is needed to improve WER results and to increase the amount of recognised words and sentences.*
 
 ```
-root@3deb765f2438:/DeepSpeech# ./bin/run-paldaruo.sh 
-Error: Mismatching alphabet size in trie file and alphabet file. Trie file will not be loaded.
-WARNING:tensorflow:It seems that global step (tf.train.get_global_step) has not been increased. Current value (could be stable): 14595 vs previous value: 14595. You could increase the global step by passing tf.train.get_global_step() to Optimizer.apply_gradients or Optimizer.minimize.
-WARNING:tensorflow:It seems that global step (tf.train.get_global_step) has not been increased. Current value (could be stable): 14595 vs previous value: 14595. You could increase the global step by passing tf.train.get_global_step() to Optimizer.apply_gradients or Optimizer.minimize.
-
-...
-
-I Test of Epoch 15 - WER: 0.088874, loss: 1.1484046695813277, mean edit distance: 0.012831
+root@4f7dc831e857:/DeepSpeech# ./bin/run-macsen.sh 
+('Preprocessing', ['/data/paldaruo/deepspeech.csv'])
+Preprocessing done
+('Preprocessing', ['/data/testsets/macsen/deepspeech.csv'])
+Preprocessing done
+('Preprocessing', ['/data/testsets/macsen/deepspeech.csv'])
+Preprocessing done
+I STARTING Optimization
+I Training epoch 0...
+I Training of Epoch 0 - loss: 191.818658                                                                                                                                                                                                                                 
+100% (973 of 973) |################################################################################################################################################################################################################| Elapsed Time: 0:18:36 Time:  0:18:36
+I Training epoch 1...
+I Training of Epoch 1 - loss: 172.296847                                                                                                                                                                                                                                 
+100% (973 of 973) |################################################################################################################################################################################################################| Elapsed Time: 0:18:51 Time:  0:18:51
+I Training epoch 2...
+I Training of Epoch 2 - loss: 102.362789                                                                                                                                                                                                                                 
+100% (973 of 973) |################################################################################################################################################################################################################| Elapsed Time: 0:18:51 Time:  0:18:51
+I Training epoch 3...
+I Training of Epoch 3 - loss: 34.322051                                                                                                                                                                                                                                  
+100% (973 of 973) |################################################################################################################################################################################################################| Elapsed Time: 0:18:47 Time:  0:18:47
+I Training epoch 4...
+I Training of Epoch 4 - loss: 12.262248                                                                                                                                                                                                                                  
+100% (973 of 973) |################################################################################################################################################################################################################| Elapsed Time: 0:20:00 Time:  0:20:00
+I Training epoch 5...
+I Training of Epoch 5 - WER: 0.153180, loss: 6.594689672493126, mean edit distance: 0.047680                                                                                                                                                                             
 I --------------------------------------------------------------------------------
-I WER: 0.083333, loss: 0.003980, mean edit distance: 0.018519
-I  - src: "ar y cefn ac roedd nesaf i gyd doedd dim cynnwys amlwg"
-I  - res: "a y cefn ac roedd nesaf i gyd doedd dim cynnwys amlwg"
+I WER: 0.090909, loss: 0.224085, mean edit distance: 0.018519
+I  - src: "cynllun cychwyn diolch llyfr yn y blaen dan i ddim cyn"
+I  - res: "cynllun cychwyn diolch llyfr yn y blaen dan i ddim cy"
 I --------------------------------------------------------------------------------
-I WER: 0.153846, loss: 0.004407, mean edit distance: 0.017857
-I  - src: "dosbarth yr un fod yn fawr ni yr ysgol ail ganrif am nid"
-I  - res: "dosbarth yr un fodyn fawr ni yr ysgol ail ganrif am nid"
+I WER: 0.090909, loss: 0.232132, mean edit distance: 0.018519
+I  - src: "cynllun cychwyn diolch llyfr yn y blaen dan i ddim cyn"
+I  - res: "cynllun cychwyn diolch llyfr yn y blaen dan i ddim cy"
 I --------------------------------------------------------------------------------
-I WER: 0.181818, loss: 0.002747, mean edit distance: 0.016949
-I  - src: "datblygu ac ati traddodiad yn byw ond hefyd y dydd williams"
-I  - res: "datblygu ac ati traddodiad yn byw ond hefyd y dyddwilliams"
-I --------------------------------------------------------------------------------
-I WER: 0.181818, loss: 0.003672, mean edit distance: 0.017544
-I  - src: "i ddod cyngor athrawon bychan neu digwydd hud mynd i weld"
-I  - res: "i ddodcyngor athrawon bychan neu digwydd hud mynd i weld"
-I --------------------------------------------------------------------------------
-I WER: 0.200000, loss: 0.003280, mean edit distance: 0.016667
-I  - src: "amgylchiadau gweithwyr fy mam ac yn llogi pethau unrhyw drws"
-I  - res: "amgylchiadau gweithwyr fy mam ac yn llogi pethau unrhywdrws"
-I --------------------------------------------------------------------------------
-I WER: 0.222222, loss: 0.004084, mean edit distance: 0.016949
-I  - src: "dros y ffordd gwasanaeth byddai'r rhestr hyd llygaid lloegr"
-I  - res: "dros y ffordd gwasanaeth byddai'r rhestr hydllygaid lloegr"
-I --------------------------------------------------------------------------------
-I WER: 0.250000, loss: 0.002930, mean edit distance: 0.017857
-I  - src: "gwraig oren diwrnod gwaith mewn eisteddfod disgownt iddo"
-I  - res: "gwraig oren diwrnod gwaith mewn eisteddfoddisgownt iddo"
-I --------------------------------------------------------------------------------
-I WER: 0.250000, loss: 0.004063, mean edit distance: 0.017857
-I  - src: "gwraig oren diwrnod gwaith mewn eisteddfod disgownt iddo"
-I  - res: "gwraig oren diwrnod gwaith mewn eisteddfoddisgownt iddo"
-I --------------------------------------------------------------------------------
-I WER: 0.250000, loss: 0.004414, mean edit distance: 0.016949
-I  - src: "oherwydd elliw awdurdod blynyddoedd gwlad tywysog llyw uwch"
-I  - res: "oherwydd elliw awdurdodblynyddoedd gwlad tywysog llyw uwch"
-I --------------------------------------------------------------------------------
-I WER: 0.250000, loss: 0.004554, mean edit distance: 0.024390
-I  - src: "gwneud iawn un dweud llais wedi gyda llyn"
-I  - res: "gwneud iawn un dweudllais wedi gyda llyn"
-I --------------------------------------------------------------------------------
+I WER: 0.090909, loss: 0.288061, mean edit distance: 0.018519
+I  - src: "cynllun cychwyn diolch llyfr yn y blaen dan i ddim cyn"
+I  - res: "cynllun cychwyn diolch llyfr yn y blaen dan i ddim cy"
+....
 ```
 
-Gellir dod allan o'r amgylchedd docker (`èxit`) wedi i'r hyfforddiant orffen a chanfod 'checkpoints' a modelau yn:
-*You can `èxit` the docker environment after training is completed and find checkpoints and models in:*
+```
+100% (973 of 973) |###############################################################################################################################################################################################################| Elapsed Time: 12:24:29 Time: 12:24:29
+I Validating epoch 5...
+I Validation of Epoch 5 - WER: 0.981913, loss: 103.99932567889874, mean edit distance: 0.724353                                                                                                                                                                          
+I --------------------------------------------------------------------------------
+I WER: 1.000000, loss: 25.771280, mean edit distance: 0.250000
+I  - src: "distawa "
+I  - res: "distaw"
+I --------------------------------------------------------------------------------
+I WER: 1.000000, loss: 25.771280, mean edit distance: 0.250000
+I  - src: "distawa "
+I  - res: "distaw"
+I --------------------------------------------------------------------------------
+I WER: 1.000000, loss: 26.369864, mean edit distance: 0.625000
+I  - src: "distawa "
+I  - res: "daw"
+I --------------------------------------------------------------------------------
+I WER: 1.000000, loss: 26.369864, mean edit distance: 0.625000
+I  - src: "distawa "
+I  - res: "daw"
+I --------------------------------------------------------------------------------
+I WER: 1.000000, loss: 27.724842, mean edit distance: 0.285714
+I  - src: "macsen "
+I  - res: "masan "
+I --------------------------------------------------------------------------------
+I WER: 1.000000, loss: 27.724842, mean edit distance: 0.285714
+I  - src: "macsen "
+I  - res: "masan "
+I --------------------------------------------------------------------------------
+I WER: 1.000000, loss: 32.695435, mean edit distance: 0.625000
+I  - src: "distawa "
+I  - res: "isowod"
+I --------------------------------------------------------------------------------
+I WER: 1.000000, loss: 32.695435, mean edit distance: 0.625000
+I  - src: "distawa "
+I  - res: "isowod"
+I --------------------------------------------------------------------------------
+I WER: 2.000000, loss: 33.126911, mean edit distance: 0.571429
+I  - src: "macsen "
+I  - res: "smas n"
+I --------------------------------------------------------------------------------
+I WER: 2.000000, loss: 33.126911, mean edit distance: 0.571429
+I  - src: "macsen "
+I  - res: "smas n"
+I --------------------------------------------------------------------------------
+100% (13 of 13) |##################################################################################################################################################################################################################| Elapsed Time: 0:01:49 Time:  0:01:49
+I Training epoch 6...
+I Training of Epoch 6 - loss: 4.346718     
+```
+
+Gellir dod allan o'r amgylchedd docker (`exit`) wedi i'r hyfforddiant orffen a chanfod 'checkpoints' a modelau yn:
+
+*You can `exit` the docker environment after training is completed and find checkpoints and models in:*
 
 `deepspeech-docker-cy/homedir/.local/share/deepspeech`
 
