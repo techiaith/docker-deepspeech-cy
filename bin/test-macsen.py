@@ -18,6 +18,8 @@ import csv
 from deepspeech import Model, printVersions
 from timeit import default_timer as timer
 
+from wer import wer
+
 try:
     from shhlex import quote
 except ImportError:
@@ -29,7 +31,7 @@ except ImportError:
 BEAM_WIDTH = 500
 
 # The alpha hyperparameter of the CTC decoder. Language Model weight
-LM_WEIGHT = 1.50
+LM_WEIGHT = 20
 
 # Valid word insertion weight. This is used to lessen the word insertion penalty
 # when the inserted word is part of the vocabulary
@@ -96,12 +98,12 @@ def main(model, alphabet, lm, trie, testset_csv, **args):
             audio_length = fin.getnframes() * (1/16000)
             fin.close()
 
-            print('Running inference.', file=sys.stderr)
+            #print('Running inference.', file=sys.stderr)
             inference_start = timer()
             hypothesis = ds.stt(audio, fs)
             inference_end = timer() - inference_start
 
-            result_file.write('%s\t%s\n' % (hypothesis, row["transcript"]))
+            result_file.write('%s\t%s\t%s\n' % (hypothesis, row["transcript"], wer(row["transcript"].split(), hypothesis.split())))
 
             print('%s , %s. Inference took %0.3fs for %0.3fs audio file.' % (hypothesis, row["transcript"], inference_end, audio_length), file=sys.stderr)
 
