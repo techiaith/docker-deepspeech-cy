@@ -131,7 +131,7 @@ def downsample_wavfile(wavfile):
     return True
 
 
-def main(paldaruo_root_dir, csv_file, alphabet_file, **args):
+def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file, **args):
 
     git_lfs_clone_paldaruo(paldaruo_root_dir)
 
@@ -139,12 +139,18 @@ def main(paldaruo_root_dir, csv_file, alphabet_file, **args):
     paldaruo_metadata = csv.DictReader(codecs.open(os.path.join(paldaruo_root_dir,'metadata.csv'), 'r', encoding='utf-8'))
     get_prompts(os.path.join(paldaruo_root_dir, 'samples.txt'))
    
-    moz_fieldnames = ['wav_filename','wav_filesize', 'transcript']
-    csv_file_out = csv.DictWriter(codecs.open(csv_file, 'w', encoding='utf-8'), fieldnames=moz_fieldnames)
+    moz_fieldnames = ['wav_filename', 'wav_filesize', 'transcript', 'amlder', 'byw', 'iaithgyntaf', 'plentyndod', 'rhanbarth', 'cyd_destun', 'rhyw', 'blwyddyngeni']
+    csv_file_out = csv.DictWriter(codecs.open(deepspeech_csv_file, 'w', encoding='utf-8'), fieldnames=moz_fieldnames)
     csv_file_out.writeheader()
+
+    #paldaruo_fieldnames = ['wav_filename','wav_filesize','transcript','amlder','byw','iaithgyntaf','ysgoluwchradd','plentyndod','rhanbarth','cyd_destun','rhyw','blwyddyngeni']
+    #paldaruo_file_out = csv.DictWriter(codecs.open(paldaruo_csv_file, 'w', encoding='utf-8'), fieldnames=paldaruo_fieldnames)
+    #paldaruo_file_out.writeheader()
 
     alphabet = set()
 
+    # @todo - allbynnu metadata eraill i (ail) ffeil csv (paldaruo.csv) 
+    # uid,amlder,byw,iaithgyntaf,ysgoluwchradd,plentyndod,rhanbarth,cyd_destun,rhyw,blwyddyngeni
     for row in paldaruo_metadata:
         uid=row['uid']
         if os.path.isdir(os.path.join(paldaruo_root_dir, uid)):
@@ -156,9 +162,25 @@ def main(paldaruo_root_dir, csv_file, alphabet_file, **args):
                 transcript = process_transcript(prompts[wavfile.replace(".wav","")])
                 alphabet = alphabet.union(get_alphabet(transcript)) 
                 if downsample_wavfile(filepath):
+                    output_entry = {
+                        'wav_filename':filepath,
+                        'wav_filesize':os.path.getsize(filepath),
+                        'transcript':transcript.encode('utf-8'),
+                        'amlder': row['amlder'],
+                        'byw': row['byw'],
+                        'iaithgyntaf': row['iaithgyntaf'],
+                        'plentyndod': row['plentyndod'],
+                        'rhanbarth': row['rhanbarth'],
+                        'cyd_destun': row['cyd_destun'],
+                        'rhyw': row['rhyw'],
+                        'blwyddyngeni': row['blwyddyngeni']
+                    }
+ 
                     print (filepath, os.path.getsize(filepath), transcript.encode('utf-8'))
-                    csv_file_out.writerow({'wav_filename':filepath, 'wav_filesize':os.path.getsize(filepath), 'transcript':transcript.encode('utf-8')})
+                    #csv_file_out.writerow({'wav_filename':filepath, 'wav_filesize':os.path.getsize(filepath), 'transcript':transcript.encode('utf-8')})
+                    csv_file_out.writerow(output_entry)
 
+    # @todo - find / load English alphabets and append Welsh specific letters. (so that we can use transfer learning)
     with codecs.open(alphabet_file, "w", encoding='utf-8') as alphabet_file_out:
         for c in sorted(alphabet):
             alphabet_file_out.write('%s\n' % c) 
@@ -168,9 +190,11 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter)
 
-    parser.add_argument("-i", dest="paldaruo_root_dir", default=DEFAULT_PALDARUO_DIR)
     parser.add_argument("-a", dest="alphabet_file", default=DEFAULT_PALDARUO_ALPHABET)
-    parser.add_argument("-o", dest="csv_file", default=DEFAULT_PALDARUO_CSV)
+    parser.add_argument("-i", dest="paldaruo_root_dir", default=DEFAULT_PALDARUO_DIR)
+    parser.add_argument("-o", dest="deepspeech_csv_file", default=DEFAULT_PALDARUO_CSV)
+
     parser.set_defaults(func=main)
     args = parser.parse_args()
     args.func(**vars(args))
+
