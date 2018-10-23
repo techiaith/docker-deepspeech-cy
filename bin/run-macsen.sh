@@ -20,7 +20,6 @@ python -u DeepSpeech.py \
 	--learning_rate 0.0001 \
 	--epoch 45 \
 	--display_step 5 \
-	--validation_step 5 \
 	--dropout_rate 0.20 \
 	--default_stddev 0.046875 \
 	--checkpoint_dir "$checkpoint_dir" \

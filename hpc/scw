@@ -3,5 +3,8 @@
 
 export DEEPSPEECH_IMG=techiaith_deepspeech.simg
 export DEEPSPEECH_RUN=$1
+export DEEPSPEECH_DATA=../../data
+export DEEPSPEECH_BIN=../bin
+export DEEPSPEECH_OUTPUT=/scratch/scw1097/deepspeech_cy
 
 sbatch run.slurm
