@@ -3,11 +3,10 @@
 #SBATCH --error=cy_deepspeech.err.%J
 #SBATCH --job-name=cy_deepspeech
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=40
+#SBATCH --cpus-per-task=8
 #SBATCH --gres=gpu:2
 #SBATCH --partition=gpu
-#SBATCH --exclusive
-#SBATCH -A scw1097
+#SBATCH --account=scw1097
 
 module purge
 module load singularity
@@ -20,7 +19,7 @@ echo DeepSpeech script ${DEEPSPEECH_RUN}
 
 start="$(date +%s)"
 
-OUTPUT_DIR=/scratch/scw1097/cy_deepspeech/${SLURM_JOB_ID}
+OUTPUT_DIR=${DEEPSPEECH_OUTPUT}/${SLURM_JOB_ID}
 mkdir -vp ${OUTPUT_DIR}
 
 {
@@ -29,7 +28,7 @@ mkdir -vp ${OUTPUT_DIR}
 	# "trap - SIGTERM" hinders "kill" from being killed itself
 	trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
-	compute_cmd="singularity exec --nv -B data,docker-deepspeech-cy/bin:/DeepSpeech/bin,/usr/local/cuda/lib64/stubs/ ${DEEPSPEECH_IMG} docker-deepspeech-cy/bin/${DEEPSPEECH_RUN}"
+	compute_cmd="singularity exec --nv -B ${DEEPSPEECH_DATA}:/data,${DEEPSPEECH_BIN}:/DeepSpeech/bin,/usr/local/cuda/lib64/stubs/ ${DEEPSPEECH_IMG} ${DEEPSPEECH_BIN}/${DEEPSPEECH_RUN}"
 	srun="srun --exclusive -N1 -n1"
 
 	# unfolding slurm's compact cluster representation
