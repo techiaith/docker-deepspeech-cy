@@ -24,6 +24,7 @@ clean:
 
 	# Clear logs
 	rm *err*
+	rm *out*
 	rm *log*
 
 update:
