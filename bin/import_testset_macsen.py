@@ -87,32 +87,10 @@ def main(testset_root_dir, csv_file, alphabet_file_path, **args):
                         print ('### %s contains non-alphabet characters: %s' % (tokenized_transcript, alphabet - set(tokenized_transcript)))
                          
 
-    corpus_file_path = os.path.join(testset_root_dir, 'corpus.txt')
-    with codecs.open(corpus_file_path, 'w', encoding='utf-8') as corpus_file:
-        for l in corpus:
-            corpus_file.write(l + '\n')
- 
-    sorted_vocab = sorted(vocab) 
-    vocab_file_path = os.path.join(testset_root_dir, 'vocab.txt')
-    with codecs.open(vocab_file_path, 'w', encoding='utf-8') as vocab_file:
-        for v in sorted_vocab:
-            vocab_file.write(v + '\n')
+    lm_binary_file_path = import_paldaruo.create_binary_language_model(testset_root_dir, corpus)
+    trie_file_path = import_paldaruo.create_trie(testset_root_dir, alphabet_file_path, lm_binary_file_path)
 
-    # create arpa language model 
-    arpa_file_path = os.path.join(testset_root_dir, 'corpus.arpa')
-    lm_cmd = 'lmplz --text %s --arpa %s --o 3 --discount_fallback' % (corpus_file_path, arpa_file_path)
-    import_paldaruo.execute_shell(lm_cmd) 
-
-    # create binary language model
-    lm_binary_file_path = os.path.join(testset_root_dir, 'lm.binary')
-    lm_bin_cmd = 'build_binary -a 22 -q 8 trie  %s %s' % (arpa_file_path, lm_binary_file_path)
-    import_paldaruo.execute_shell(lm_bin_cmd) 
-
-    # create trie
-    trie_file_path = os.path.join(testset_root_dir, 'trie')
-    trie_cmd = 'generate_trie %s %s %s %s' % (alphabet_file_path, lm_binary_file_path, vocab_file_path, trie_file_path)  
-    import_paldaruo.execute_shell(trie_cmd) 
-
+    print ("Import Macsen testset to %s finished. Associated lm and trie files at %s and %s" % (testset_root_dir, lm_binary_file_path, trie_file_path))
 
  
 if __name__ == "__main__":

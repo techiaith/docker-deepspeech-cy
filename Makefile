@@ -10,16 +10,16 @@ run:
 build:
 	if [ ! -d "DeepSpeech" ]; then \
 	    git clone https://github.com/mozilla/DeepSpeech.git; \
+            cd DeepSpeech && docker build --rm -t mozilla/deepspeech .; \
 	fi
-	cd DeepSpeech && docker build --rm -t mozilla/deepspeech .
 	docker build --rm -t techiaith/deepspeech .
 
 clean:
 	docker rmi techiaith/deepspeech
 	docker rmi mozilla/deepspeech
 	docker rmi nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
-	rm -rf DeepSpeech
-	rm -rf homedir
+	sudo rm -rf DeepSpeech
+	sudo rm -rf homedir
 	
 stop:
 	docker stop techiaith-deepspeech

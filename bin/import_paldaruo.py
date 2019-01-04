@@ -41,13 +41,15 @@ Usage:
 #sys.stdout = UTF8Writer(sys.stdout)
 
 PALDARUO_DATA_URL="https://git.techiaith.bangor.ac.uk/Data-Porth-Technolegau-Iaith/Corpws-Paldaruo"
-PALDARUO_DATA_VERSION="v4.0"
+PALDARUO_DATA_VERSION="v5.0"
 
 DEFAULT_PALDARUO_DIR = '/data/paldaruo'
 DEFAULT_PALDARUO_ALPHABET = '/data/paldaruo/alphabet.txt'
 DEFAULT_PALDARUO_CSV = '/data/paldaruo/deepspeech.csv'
 
 prompts = {}
+
+corpus = set()
 
 def execute_shell(cmd):
     print('$ %s' % cmd)
@@ -131,7 +133,37 @@ def downsample_wavfile(wavfile):
     return True
 
 
-def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file, **args):
+def create_binary_language_model(data_root_dir, corpus):
+    corpus_file_path = os.path.join(data_root_dir, 'corpus.txt')
+    with codecs.open(corpus_file_path, 'w', encoding='utf-8') as corpus_file:
+        for l in corpus:
+            corpus_file.write(l + '\n')
+
+    # create arpa language model 
+    arpa_file_path = os.path.join(data_root_dir, 'corpus.arpa')
+    lm_cmd = 'lmplz --text %s --arpa %s --o 3 --discount_fallback' % (corpus_file_path, arpa_file_path)
+    execute_shell(lm_cmd)
+
+    # create binary language model
+    lm_binary_file_path = os.path.join(data_root_dir, 'lm.binary')
+    lm_bin_cmd = 'build_binary -a 22 -q 8 trie  %s %s' % (arpa_file_path, lm_binary_file_path)
+    execute_shell(lm_bin_cmd)
+
+    return lm_binary_file_path
+
+
+
+def create_trie(data_root_dir, alphabet_file_path, lm_binary_file_path):
+    # create trie
+    trie_file_path = os.path.join(data_root_dir, 'trie')
+    trie_cmd = 'generate_trie %s %s %s' % (alphabet_file_path, lm_binary_file_path, trie_file_path)
+    execute_shell(trie_cmd)
+
+    return trie_file_path
+
+
+
+def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file_path, **args):
 
     git_lfs_clone_paldaruo(paldaruo_root_dir)
 
@@ -160,6 +192,7 @@ def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file, **args):
                 if wavfile.startswith("silence"): continue
                 if get_duration_wav(filepath) < 5 : continue
                 transcript = process_transcript(prompts[wavfile.replace(".wav","")])
+                corpus.add(transcript)
                 alphabet = alphabet.union(get_alphabet(transcript)) 
                 if downsample_wavfile(filepath):
                     output_entry = {
@@ -181,16 +214,21 @@ def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file, **args):
                     csv_file_out.writerow(output_entry)
 
     # @todo - find / load English alphabets and append Welsh specific letters. (so that we can use transfer learning)
-    with codecs.open(alphabet_file, "w", encoding='utf-8') as alphabet_file_out:
+    with codecs.open(alphabet_file_path, "w", encoding='utf-8') as alphabet_file_out:
         for c in sorted(alphabet):
             alphabet_file_out.write('%s\n' % c) 
 
-           
+    lm_binary_file_path = create_binary_language_model(paldaruo_root_dir, corpus)
+    trie_file_path = create_trie(paldaruo_root_dir, alphabet_file_path, lm_binary_file_path)
+
+    print ("Import paldaruo to %s finished. Associated lm and trie files at %s and %s" % (paldaruo_root_dir, lm_binary_file_path, trie_file_path))
+ 
+             
 if __name__ == "__main__":
 
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter)
 
-    parser.add_argument("-a", dest="alphabet_file", default=DEFAULT_PALDARUO_ALPHABET)
+    parser.add_argument("-a", dest="alphabet_file_path", default=DEFAULT_PALDARUO_ALPHABET)
     parser.add_argument("-i", dest="paldaruo_root_dir", default=DEFAULT_PALDARUO_DIR)
     parser.add_argument("-o", dest="deepspeech_csv_file", default=DEFAULT_PALDARUO_CSV)
 
