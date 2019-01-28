@@ -25,3 +25,8 @@ python -u DeepSpeech.py \
 	--checkpoint_dir "$checkpoint_dir" \
 	--export_dir /data/output \
 	"$@"
+
+cp /data/paldaruo/alphabet.txt /data/output/
+cp /data/testsets/macsen/trie /data/output/
+cp /data/testsets/macsen/lm.binary /data/output/
+
