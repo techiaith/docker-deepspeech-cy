@@ -3,3 +3,4 @@ DeepSpeech
 data/*
 homedir/*
 tmp/*
+local/bin/commonvoice_url.py

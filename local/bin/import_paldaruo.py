@@ -116,14 +116,6 @@ def get_prompts(sourcefile):
     return prompts
 
 
-def get_duration_wav(wavfile):
-    f = wave.open(wavfile, 'r')
-    frames = f.getnframes()
-    rate = f.getframerate()
-    duration = frames / float(rate)
-    f.close()
-    return duration
-
 
 def get_alphabet(transcript):
     return set(transcript)
@@ -135,47 +127,6 @@ def process_transcript(orig_transcript):
     transcript = transcript.lower()
 
     return transcript 
-
-
-def downsample_wavfile(wavfile):
-    temp_48kHz_wavfile = wavfile.replace(".wav","_48kHz.wav")
-    shutil.move(wavfile, temp_48kHz_wavfile)
-
-    tf = Transformer()
-    tf.convert(samplerate=16000, n_channels=1)
-    tf.build(temp_48kHz_wavfile, wavfile)
-    os.remove(temp_48kHz_wavfile)
-
-    return True
-
-
-def create_binary_language_model(data_root_dir, corpus):
-    corpus_file_path = os.path.join(data_root_dir, 'corpus.txt')
-    with codecs.open(corpus_file_path, 'w', encoding='utf-8') as corpus_file:
-        for l in corpus:
-            corpus_file.write(l + '\n')
-
-    # create arpa language model 
-    arpa_file_path = os.path.join(data_root_dir, 'corpus.arpa')
-    lm_cmd = 'lmplz --text %s --arpa %s --o 3 --discount_fallback' % (corpus_file_path, arpa_file_path)
-    execute_shell(lm_cmd)
-
-    # create binary language model
-    lm_binary_file_path = os.path.join(data_root_dir, 'lm.binary')
-    lm_bin_cmd = 'build_binary -a 22 -q 8 trie  %s %s' % (arpa_file_path, lm_binary_file_path)
-    execute_shell(lm_bin_cmd)
-
-    return lm_binary_file_path
-
-
-
-def create_trie(data_root_dir, alphabet_file_path, lm_binary_file_path):
-    # create trie
-    trie_file_path = os.path.join(data_root_dir, 'trie')
-    trie_cmd = 'generate_trie %s %s %s' % (alphabet_file_path, lm_binary_file_path, trie_file_path)
-    execute_shell(trie_cmd)
-
-    return trie_file_path
 
 
 
