@@ -1,11 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 import os
-import wget
 import codecs
 import zipfile
 import csv
@@ -13,18 +10,18 @@ import csv
 import pandas as pd
 import numpy as np
 
+import corpus_creator
+
 import audio_processing_utils
 import language_modelling_utils
 
+from urllib.request import urlretrieve
 from argparse import ArgumentParser, RawTextHelpFormatter
 from commonvoice_url import COMMONVOICE_DOWNLOAD_URL_BASE
 
 DESCRIPTION = """
 
-
 """
-
-
 
 DEFAULT_LOCALE = 'cy'
 DEFAULT_DATA_DIR = '/data/commonvoice-%s/' % DEFAULT_LOCALE
@@ -42,22 +39,36 @@ def unzip(zipfile_path, destination):
         zf.extractall(destination)
 
 
-def get_common_voice_artefact(data_root_dir, artefact):
+def download_progress(blocknum, blocksize, totalsize):
+    readsofar = blocknum * blocksize
+    if totalsize > 0:
+        percent = readsofar * 1e2 / totalsize
+        s = "\r%5.1f%% %*d / %d" % (
+            percent, len(str(totalsize)), readsofar, totalsize)
+        sys.stderr.write(s)
+        if readsofar >= totalsize: # near the end
+            sys.stderr.write("\n")
+    else: # total size is unknown
+        sys.stderr.write("read %d\n" % (readsofar,))
+
+
+def download_common_voice_artefact(data_root_dir, artefact):
     url = os.path.join(COMMONVOICE_DOWNLOAD_URL_BASE, artefact)
     print ("Downloading %s" % url)
-    wget.download(url, data_root_dir)
+    destination_file_path = os.path.join(data_root_dir, artefact)
+    urlretrieve(url, destination_file_path, download_progress)
     unzip(os.path.join(data_root_dir, artefact), data_root_dir) 
 
 
-def get_data(data_root_dir, locale):
+def download_data(data_root_dir, locale):
     if not os.path.exists(data_root_dir):
          os.makedirs(data_root_dir)
 
     # download cy.zip audio data
-    get_common_voice_artefact(data_root_dir, locale + '.zip') 
+    download_common_voice_artefact(data_root_dir, locale + '.zip') 
 
     # download clips.tsv.zip
-    get_common_voice_artefact(data_root_dir, 'clips.tsv.zip')
+    download_common_voice_artefact(data_root_dir, 'clips.tsv.zip')
 
 
 def convert_audio(data_root_dir):
@@ -87,40 +98,37 @@ def dataframe_to_deepspeech_csv(df, data_root_dir, csv_file):
             'transcript': transcript,
             'age': row["age"],
             'gender':row["gender"],
-            'accent':row["accent"],
-            'dataset':row["bucket"]
+            'accent':row["accent"]
+            #'dataset':row["bucket"]
         }
         csv_file_out.writerow(output_entry) 
 
 
+
 def main(data_root_dir, deepspeech_csv_file, alphabet_file_path, locale, **args):
 
-    get_data(data_root_dir, locale)
+    download_data(data_root_dir, locale)
 
+    clips_file_path = os.path.join(data_root_dir, 'clips.tsv')
+    if not os.path.isfile(clips_file_path):
+        print ("No clips file")
+        return
+ 
     convert_audio(data_root_dir)
+    
+    corpus_creator.execute(data_root_dir, clips_file_path, locale)
+
 
     # commonvoice fieldnames
     # client_id, path, sentence, up_votes, down_votes, age, gender, accent, locale, bucket
-    commonvoice_df = pd.read_csv(os.path.join(data_root_dir, 'clips.tsv'), delimiter='\t', encoding='utf-8')
+    corpus_df = pd.read_csv(os.path.join(data_root_dir, locale, 'valid.tsv'), delimiter='\t', encoding='utf-8')
 
     print ("all datasets")
-    commonvoice_df_locale = commonvoice_df.loc[commonvoice_df['locale'] == locale] 
-    dataframe_to_deepspeech_csv(commonvoice_df_locale, data_root_dir, deepspeech_csv_file)
-
-    print ("train")
-    commonvoice_df_locale_train = commonvoice_df_locale.loc[commonvoice_df_locale['bucket'] == 'train']
-    dataframe_to_deepspeech_csv(commonvoice_df_locale_train, data_root_dir, deepspeech_csv_file.replace('.csv','.train.csv'))
-
-    print ("dev") 
-    commonvoice_df_locale_dev = commonvoice_df_locale.loc[commonvoice_df_locale['bucket'] == 'dev']
-    dataframe_to_deepspeech_csv(commonvoice_df_locale_dev, data_root_dir, deepspeech_csv_file.replace('.csv','.dev.csv'))
-
-    print ("test")
-    commonvoice_df_locale_test = commonvoice_df_locale.loc[commonvoice_df_locale['bucket'] == 'test']
-    dataframe_to_deepspeech_csv(commonvoice_df_locale_test, data_root_dir, deepspeech_csv_file.replace('.csv','.test.csv'))
+    dataframe_to_deepspeech_csv(corpus_df, data_root_dir, deepspeech_csv_file)
 
     language_modelling_utils.save_alphabet(alphabet, alphabet_file_path)
     language_modelling_utils.save_corpus(corpus, os.path.join(data_root_dir, "corpus.txt"))
+
 
 
 if __name__ == "__main__": 

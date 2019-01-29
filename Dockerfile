@@ -10,11 +10,10 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.d
         && pip install sox wget sklearn pandas virtualenv \
 	&& rm -rf /var/lib/apt/lists/* 
 
-WORKDIR /DeepSpeech/bin
-RUN git clone https://github.com/mozilla/CorporaCreator.git \
-	&& cd CorporaCreator \
+ADD CorporaCreator /CorporaCreator
+RUN cd /CorporaCreator \
 	&& pip3 uninstall -y setuptools \
-	&& pip3 install setuptools==39.1.0 \
+	&& pip3 install setuptools==39.1.0 sox \
 	&& python3 setup.py install
 
 WORKDIR /DeepSpeech
