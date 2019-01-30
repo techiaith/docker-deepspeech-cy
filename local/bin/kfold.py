@@ -46,12 +46,10 @@ if __name__ == '__main__':
 
     parser.add_argument('--csv', 
                         dest='csvfile',
-                        default='/data/paldaruo/deepspeech.csv',
                         help='DeepSpeech CSV file.')
 
     parser.add_argument('--dest_dir',
                         dest='dest_dir',
-                        default='/data/paldaruo',
                         help='dest dir')
 
     parser.set_defaults(func=main)

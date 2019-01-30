@@ -49,12 +49,11 @@ def create_binary_language_model(corpus_file_path):
     execute_shell(lm_cmd)
 
     # create binary language model
-    lm_binary_file_path = os.path.join(os.path.realpath(corpus_file_path), 'lm.binary')
+    lm_binary_file_path = os.path.join(os.path.abspath(os.path.join(corpus_file_path,'..')), 'lm.binary')
     lm_bin_cmd = 'build_binary -a 22 -q 8 trie  %s %s' % (arpa_file_path, lm_binary_file_path)
     execute_shell(lm_bin_cmd)
 
     return lm_binary_file_path
-
 
 
 def create_trie(trie_file_path, alphabet_file_path, lm_binary_file_path):
