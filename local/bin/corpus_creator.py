@@ -16,6 +16,7 @@ def execute(destination, clips_file_path, locale):
     args = append(args, '-d', destination) #'/data/commonvoice-cy')
     args = append(args, '-f', clips_file_path) # '/data/commonvoice-cy/clips.tsv')
     args = append(args, '-l', locale) # 'cy')
+    args = append(args, '-v','')
     args = parse_args(args)
 
     corpora = Corpora(args)

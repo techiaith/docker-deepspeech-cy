@@ -18,6 +18,7 @@ import audio_processing_utils
 import language_modelling_utils
 
 from urllib.request import urlretrieve
+import tarfile
 from argparse import ArgumentParser, RawTextHelpFormatter
 from commonvoice_url import COMMONVOICE_DOWNLOAD_URL_BASE
 
@@ -41,6 +42,12 @@ def unzip(zipfile_path, destination):
         zf.extractall(destination)
 
 
+def untar(targzfile_path, destination):
+    print ("Extracting tar gz file %s..." % targzfile_path)
+    with tarfile.open(targzfile_path) as t:
+        t.extractall(destination)
+     
+ 
 def download_progress(blocknum, blocksize, totalsize):
     readsofar = blocknum * blocksize
     if totalsize > 0:
@@ -59,7 +66,10 @@ def download_common_voice_artefact(data_root_dir, artefact):
     print ("Downloading %s" % url)
     destination_file_path = os.path.join(data_root_dir, artefact)
     urlretrieve(url, destination_file_path, download_progress)
-    unzip(os.path.join(data_root_dir, artefact), data_root_dir) 
+    if artefact.endswith('.tar.gz'):
+        untar(destination_file_path, data_root_dir)
+    else:
+        unzip(destination_file_path, data_root_dir) 
 
 
 def download_data(data_root_dir, locale):
@@ -67,10 +77,10 @@ def download_data(data_root_dir, locale):
          os.makedirs(data_root_dir)
 
     # download cy.zip audio data
-    download_common_voice_artefact(data_root_dir, locale + '.zip') 
+    download_common_voice_artefact(data_root_dir, locale + '.tar.gz') 
 
     # download clips.tsv.zip
-    download_common_voice_artefact(data_root_dir, 'clips.tsv.zip')
+    download_common_voice_artefact(data_root_dir, 'clips.tsv.tar.gz')
 
 
 def convert_audio(data_root_dir):
@@ -81,7 +91,7 @@ def convert_audio(data_root_dir):
             audio_processing_utils.convert_mp3(os.path.join(data_root_dir, mp3file))
 
 
-def dataframe_to_deepspeech_csv(df, data_root_dir, csv_file):
+def dataframe_to_deepspeech_csv(df, audio_files_dir, csv_file):
     global alphabet
     global corpus
 
@@ -90,7 +100,7 @@ def dataframe_to_deepspeech_csv(df, data_root_dir, csv_file):
     csv_file_out = csv.DictWriter(codecs.open(csv_file, 'w', encoding='utf-8'), fieldnames=deepspeech_fieldnames)
     csv_file_out.writeheader()
     for index, row in df.iterrows():
-        wav_filepath = os.path.join(data_root_dir, row["path"].replace(".mp3",".wav")) 
+        wav_filepath = os.path.join(audio_files_dir, row["path"].replace(".mp3",".wav")) 
         transcript = language_modelling_utils.process_transcript(row["sentence"])
         corpus.add(transcript)
         alphabet = alphabet.union(language_modelling_utils.get_alphabet(transcript)) 
@@ -106,7 +116,6 @@ def dataframe_to_deepspeech_csv(df, data_root_dir, csv_file):
         csv_file_out.writerow(output_entry) 
 
 
-
 def main(data_root_dir, deepspeech_csv_file, alphabet_file_path, locale, **args):
 
     download_data(data_root_dir, locale)
@@ -115,22 +124,18 @@ def main(data_root_dir, deepspeech_csv_file, alphabet_file_path, locale, **args)
     if not os.path.isfile(clips_file_path):
         print ("No clips file")
         return
- 
-    convert_audio(data_root_dir)
     
     corpus_creator.execute(data_root_dir, clips_file_path, locale)
 
-
     # commonvoice fieldnames
     # client_id, path, sentence, up_votes, down_votes, age, gender, accent, locale, bucket
-    corpus_df = pd.read_csv(os.path.join(data_root_dir, locale, 'valid.tsv'), delimiter='\t', encoding='utf-8')
+    corpus_df = pd.read_csv(os.path.join(data_root_dir, locale, 'validated.tsv'), delimiter='\t', encoding='utf-8')
 
-    print ("all datasets")
-    dataframe_to_deepspeech_csv(corpus_df, data_root_dir, deepspeech_csv_file)
+    audio_files_dir = os.path.join(data_root_dir, 'clips') 
+    dataframe_to_deepspeech_csv(corpus_df, audio_files_dir, deepspeech_csv_file)
 
     language_modelling_utils.save_alphabet(alphabet, alphabet_file_path)
     language_modelling_utils.save_corpus(corpus, os.path.join(data_root_dir, "corpus.txt"))
-
 
 
 if __name__ == "__main__": 
