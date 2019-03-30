@@ -19,6 +19,9 @@ from sox import Transformer
 
 from argparse import ArgumentParser, RawTextHelpFormatter
 
+import audio_processing_utils
+import language_modelling_utils
+
 
 DESCRIPTION = """
 
@@ -116,24 +119,10 @@ def get_prompts(sourcefile):
     return prompts
 
 
-
-def get_alphabet(transcript):
-    return set(transcript)
-
-
-def process_transcript(orig_transcript):
-    transcript = orig_transcript.replace("_"," ")
-    transcript = transcript.replace("-"," ")
-    transcript = transcript.lower()
-
-    return transcript 
-
-
-
 def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file_path, **args):
 
     git_lfs_clone_paldaruo(paldaruo_root_dir)
-    clean_corpus(paldaruo_root_dir)
+    initialize_bad_utterances(paldaruo_root_dir)
 
     paldaruo_files = get_directory_structure(paldaruo_root_dir)
     paldaruo_metadata = csv.DictReader(codecs.open(os.path.join(paldaruo_root_dir,'metadata.csv'), 'r', encoding='utf-8'))
@@ -154,11 +143,11 @@ def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file_path, **args):
                 filepath=os.path.join(paldaruo_root_dir, uid, wavfile)
                 if not os.path.isfile(filepath): continue
                 if wavfile.startswith("silence"): continue
-                if get_duration_wav(filepath) < 5 : continue
-                if downsample_wavfile(filepath):
-                    transcript = process_transcript(prompts[wavfile.replace(".wav","")])
+                if audio_processing_utils.get_duration_wav(filepath) < 5 : continue
+                if audio_processing_utils.downsample_wavfile(filepath):
+                    transcript = language_modelling_utils.process_transcript(prompts[wavfile.replace(".wav","")])
                     corpus.add(transcript)
-                    alphabet = alphabet.union(get_alphabet(transcript)) 
+                    alphabet = alphabet.union(language_modelling_utils.get_alphabet(transcript)) 
                     hashed_filename = hashlib.md5(filepath.encode('utf-8')).hexdigest()
                     if uid + '_' + hashed_filename not in bad_utterances:
                         output_entry = {
@@ -183,10 +172,10 @@ def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file_path, **args):
         for c in sorted(alphabet):
             alphabet_file_out.write('%s\n' % c) 
 
-    lm_binary_file_path = create_binary_language_model(paldaruo_root_dir, corpus)
-    trie_file_path = create_trie(paldaruo_root_dir, alphabet_file_path, lm_binary_file_path)
+    language_modelling_utils.save_alphabet(alphabet, alphabet_file_path)
+    language_modelling_utils.save_corpus(corpus, os.path.join(paldaruo_root_dir, "corpus.txt"))
 
-    print ("Import paldaruo to %s finished. Associated lm and trie files at %s and %s" % (paldaruo_root_dir, lm_binary_file_path, trie_file_path))
+    print ("Import paldaruo to %s finished. " % (paldaruo_root_dir))
  
              
 if __name__ == "__main__":

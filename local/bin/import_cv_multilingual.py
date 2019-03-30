@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sys
-#reload(sys)
-#sys.setdefaultencoding('utf-8')
-
 import os
-import codecs
+import sys
 import zipfile
 import csv
 
@@ -97,7 +93,7 @@ def dataframe_to_deepspeech_csv(df, audio_files_dir, csv_file):
 
     # deepspeech fieldnames
     deepspeech_fieldnames = ['wav_filename', 'wav_filesize', 'transcript', 'age', 'gender', 'accent', 'dataset']
-    csv_file_out = csv.DictWriter(codecs.open(csv_file, 'w', encoding='utf-8'), fieldnames=deepspeech_fieldnames)
+    csv_file_out = csv.DictWriter(open(csv_file, 'w', encoding='utf-8'), fieldnames=deepspeech_fieldnames)
     csv_file_out.writeheader()
     for index, row in df.iterrows():
         wav_filepath = os.path.join(audio_files_dir, row["path"].replace(".mp3",".wav")) 
@@ -111,7 +107,6 @@ def dataframe_to_deepspeech_csv(df, audio_files_dir, csv_file):
             'age': row["age"],
             'gender':row["gender"],
             'accent':row["accent"]
-            #'dataset':row["bucket"]
         }
         csv_file_out.writerow(output_entry) 
 
@@ -119,12 +114,13 @@ def dataframe_to_deepspeech_csv(df, audio_files_dir, csv_file):
 def main(data_root_dir, deepspeech_csv_file, alphabet_file_path, locale, **args):
 
     download_data(data_root_dir, locale)
+    convert_audio(os.path.join(data_root_dir, 'clips'))
 
     clips_file_path = os.path.join(data_root_dir, 'clips.tsv')
     if not os.path.isfile(clips_file_path):
         print ("No clips file")
         return
-    
+   
     corpus_creator.execute(data_root_dir, clips_file_path, locale)
 
     # commonvoice fieldnames

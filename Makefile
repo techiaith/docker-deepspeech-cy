@@ -20,8 +20,9 @@ build:
 clean:
 	docker rmi techiaith/deepspeech
 	docker rmi mozilla/deepspeech
-	docker rmi nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+	docker rmi nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 	sudo rm -rf DeepSpeech
+	sudo rm -rf CorporaCreator
 	sudo rm -rf homedir
 	
 stop:

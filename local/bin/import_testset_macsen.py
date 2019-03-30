@@ -90,10 +90,12 @@ def main(testset_root_dir, csv_file, alphabet_file_path, **args):
                         print ('### %s contains non-alphabet characters: %s' % (tokenized_transcript, alphabet - set(tokenized_transcript)))
 
     corpus_file_path = os.path.join(testset_root_dir, "corpus.txt")
-    language_modelling_utils.save_corpus(corpus, corpus_file_path)
+    lm_binary_file_path = os.path.join(testset_root_dir, "lm.binary")
+    trie_file_path = os.path.join(testset_root_dir, "trie")
 
-    lm_binary_file_path = language_modelling_utils.create_binary_language_model(corpus_file_path)
-    trie_file_path = language_modelling_utils.create_trie(os.path.join(testset_root_dir, 'trie'), alphabet_file_path, lm_binary_file_path)
+    language_modelling_utils.save_corpus(corpus, corpus_file_path)
+    language_modelling_utils.create_binary_language_model(lm_binary_file_path, corpus_file_path)
+    language_modelling_utils.create_trie(trie_file_path, alphabet_file_path, lm_binary_file_path)
 
     print ("Import Macsen testset to %s finished. Associated lm and trie files at %s and %s" % (testset_root_dir, lm_binary_file_path, trie_file_path))
 
