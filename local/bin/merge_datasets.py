@@ -24,12 +24,12 @@ language_modelling_utils.save_alphabet(alphabet, "/data/alphabet.txt")
 
 #
 # merge alphabets
-#all_alpha_files = glob.glob(os.path.join(path, "*.alphabet"))
-#for f in all_alpha_files:
-#    print (f)
-#    with open (f, 'r', encoding='utf-8') as a:
-#        for l in a:
-#            alphabet.add(l.strip())
-#
-#language_modelling_utils.save_alphabet(alphabet, '/data/alphabet.txt')
-#
+all_alpha_files = glob.glob(os.path.join(path, "*.alphabet"))
+for f in all_alpha_files:
+    print (f)
+    with open (f, 'r', encoding='utf-8') as a:
+        for l in a:
+            alphabet.add(l.replace('\n',''))
+
+language_modelling_utils.save_alphabet(alphabet, '/data/alphabet.txt')
+

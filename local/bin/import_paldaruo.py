@@ -1,11 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 import os
-import codecs
+import sys
 import csv
 import errno
 import hashlib
@@ -13,6 +9,7 @@ import shlex
 import shutil
 import zipfile
 import subprocess
+import functools
 
 import wave
 from sox import Transformer
@@ -41,9 +38,6 @@ Usage:
 
 """
 
-#UTF8Writer = codecs.getwriter('utf8')
-#sys.stdout = UTF8Writer(sys.stdout)
-
 PALDARUO_DATA_URL="https://git.techiaith.bangor.ac.uk/Data-Porth-Technolegau-Iaith/Corpws-Paldaruo"
 PALDARUO_DATA_VERSION="v5.0"
 
@@ -67,7 +61,7 @@ def execute_shell(cmd):
 def initialize_bad_utterances(paldaruo_root_dir):
     all_info_sorted_filepath = os.path.join(paldaruo_root_dir, 'all_info.sorted.txt')
     if os.path.isfile(all_info_sorted_filepath):
-        with codecs.open(all_info_sorted_filepath, 'r', encoding='utf-8') as all_info_sorted_file:
+        with open(all_info_sorted_filepath, 'r', encoding='utf-8') as all_info_sorted_file:
             for line in all_info_sorted_file:
                 # we only require the utterance-id and number of errors, seperated by space at begining of line. 
                 all_info_top_fields=line.split(' ', 2)
@@ -102,15 +96,16 @@ def get_directory_structure(rootdir):
     for path, dirs, files in os.walk(rootdir, followlinks=True):
         folders = path[start:].split(os.sep)
         subdir = dict.fromkeys(files)
-        parent = reduce(dict.get, folders[:-1], dir)
+        parent = functools.reduce(dict.get, folders[:-1], dir)
         parent[folders[-1]] = subdir
 
-    topdirname = dir.iterkeys().next()
-    return dir[topdirname]
+    #topdirname = dir.iterkeys().next()
+    #return dir[topdirname]
+    return dir
 
 
 def get_prompts(sourcefile):
-    with codecs.open(sourcefile,'r', encoding='utf-8') as prompts_file:
+    with open(sourcefile,'r', encoding='utf-8') as prompts_file:
         for line in prompts_file:
             elements = line.rstrip().split(' ',1)
             key = elements[0].replace('*/','')
@@ -125,11 +120,11 @@ def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file_path, **args):
     initialize_bad_utterances(paldaruo_root_dir)
 
     paldaruo_files = get_directory_structure(paldaruo_root_dir)
-    paldaruo_metadata = csv.DictReader(codecs.open(os.path.join(paldaruo_root_dir,'metadata.csv'), 'r', encoding='utf-8'))
+    paldaruo_metadata = csv.DictReader(open(os.path.join(paldaruo_root_dir,'metadata.csv'), 'r', encoding='utf-8'))
     get_prompts(os.path.join(paldaruo_root_dir, 'samples.txt'))
    
     moz_fieldnames = ['wav_filename', 'wav_filesize', 'transcript', 'amlder', 'byw', 'iaithgyntaf', 'plentyndod', 'rhanbarth', 'cyd_destun', 'rhyw', 'blwyddyngeni']
-    csv_file_out = csv.DictWriter(codecs.open(deepspeech_csv_file, 'w', encoding='utf-8'), fieldnames=moz_fieldnames)
+    csv_file_out = csv.DictWriter(open(deepspeech_csv_file, 'w', encoding='utf-8'), fieldnames=moz_fieldnames)
     csv_file_out.writeheader()
 
     alphabet = set()
@@ -139,36 +134,37 @@ def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file_path, **args):
     for row in paldaruo_metadata:
         uid=row['uid']
         if os.path.isdir(os.path.join(paldaruo_root_dir, uid)):
-            for wavfile in paldaruo_files[uid]:
-                filepath=os.path.join(paldaruo_root_dir, uid, wavfile)
-                if not os.path.isfile(filepath): continue
-                if wavfile.startswith("silence"): continue
-                if audio_processing_utils.get_duration_wav(filepath) < 5 : continue
-                if audio_processing_utils.downsample_wavfile(filepath):
-                    transcript = language_modelling_utils.process_transcript(prompts[wavfile.replace(".wav","")])
-                    corpus.add(transcript)
-                    alphabet = alphabet.union(language_modelling_utils.get_alphabet(transcript)) 
-                    hashed_filename = hashlib.md5(filepath.encode('utf-8')).hexdigest()
-                    if uid + '_' + hashed_filename not in bad_utterances:
-                        output_entry = {
-                            'wav_filename':filepath,
-                            'wav_filesize':os.path.getsize(filepath),
-                            'transcript':transcript.encode('utf-8'),
-                            'amlder': row['amlder'],
-                            'byw': row['byw'],
-                            'iaithgyntaf': row['iaithgyntaf'],
-                            'plentyndod': row['plentyndod'],
-                            'rhanbarth': row['rhanbarth'],
-                            'cyd_destun': row['cyd_destun'],
-                            'rhyw': row['rhyw'],
-                            'blwyddyngeni': row['blwyddyngeni']
-                        }
-                        print (filepath, os.path.getsize(filepath), transcript.encode('utf-8'))
-                        csv_file_out.writerow(output_entry)
+            for top in paldaruo_files:
+                for wavfile in paldaruo_files[top][uid]:
+                    filepath=os.path.join(paldaruo_root_dir, uid, wavfile)
+                    if not os.path.isfile(filepath): continue
+                    if wavfile.startswith("silence"): continue
+                    if audio_processing_utils.get_duration_wav(filepath) < 5 : continue
+                    if audio_processing_utils.downsample_wavfile(filepath):
+                        transcript = language_modelling_utils.process_transcript(prompts[wavfile.replace(".wav","")])
+                        corpus.add(transcript)
+                        alphabet = alphabet.union(language_modelling_utils.get_alphabet(transcript)) 
+                        hashed_filename = hashlib.md5(filepath.encode('utf-8')).hexdigest()
+                        if uid + '_' + hashed_filename not in bad_utterances:
+                            output_entry = {
+                                'wav_filename':filepath,
+                                'wav_filesize':os.path.getsize(filepath),
+                                'transcript':transcript.encode('utf-8'),
+                                'amlder': row['amlder'],
+                                'byw': row['byw'],
+                                'iaithgyntaf': row['iaithgyntaf'],
+                                'plentyndod': row['plentyndod'],
+                                'rhanbarth': row['rhanbarth'],
+                                'cyd_destun': row['cyd_destun'],
+                                'rhyw': row['rhyw'],
+                                'blwyddyngeni': row['blwyddyngeni']
+                            }
+                            print (filepath, os.path.getsize(filepath), transcript.encode('utf-8'))
+                            csv_file_out.writerow(output_entry)
 
 
     # @todo - find / load English alphabets and append Welsh specific letters. (so that we can use transfer learning)
-    with codecs.open(alphabet_file_path, "w", encoding='utf-8') as alphabet_file_out:
+    with open(alphabet_file_path, "w", encoding='utf-8') as alphabet_file_out:
         for c in sorted(alphabet):
             alphabet_file_out.write('%s\n' % c) 
 
