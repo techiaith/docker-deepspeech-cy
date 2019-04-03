@@ -31,11 +31,10 @@ except ImportError:
 BEAM_WIDTH = 500
 
 # The alpha hyperparameter of the CTC decoder. Language Model weight
-LM_WEIGHT = 20
+LM_ALPHA = 20
 
-# Valid word insertion weight. This is used to lessen the word insertion penalty
-# when the inserted word is part of the vocabulary
-VALID_WORD_COUNT_WEIGHT = 2.25
+# The beta hyperparameter of the CTC decoder. Word insertion bonus.
+LM_BETA = 1.85
 
 
 # These constants are tied to the shape of the graph used (changing them changes
@@ -78,7 +77,7 @@ def main(model, alphabet, lm, trie, testset_csv, **args):
 
     print('Loading language model from files {} {}'.format(lm, trie), file=sys.stderr)
     lm_load_start = timer()
-    ds.enableDecoderWithLM(alphabet, lm, trie, LM_WEIGHT, VALID_WORD_COUNT_WEIGHT)
+    ds.enableDecoderWithLM(alphabet, lm, trie, LM_ALPHA, LM_BETA)
     lm_load_end = timer() - lm_load_start
     print('Loaded language model in {:.3}s.'.format(lm_load_end), file=sys.stderr)
 
@@ -119,15 +118,15 @@ if __name__ == '__main__':
                         help='Path to the model (protocol buffer binary file)')
     parser.add_argument('--alphabet', 
                         dest='alphabet',
-                        default='/data/paldaruo/alphabet.txt',
+                        default='/data/output/alphabet.txt',
                         help='Path to the configuration file specifying the alphabet used by the network')
     parser.add_argument('--lm', nargs='?',
                         dest='lm',
-                        default='/data/testsets/macsen/lm.binary',
+                        default='/data/output/lm.binary',
                         help='Path to the language model binary file')
     parser.add_argument('--trie', nargs='?',
                         dest='trie',
-                        default='/data/testsets/macsen/trie',
+                        default='/data/output/trie',
                         help='Path to the language model trie file created with native_client/generate_trie')
     parser.add_argument('--csv',
                         dest='testset_csv',

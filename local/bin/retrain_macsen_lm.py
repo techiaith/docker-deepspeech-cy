@@ -11,8 +11,8 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 DEFAULT_LOCALE='cy'
 DEFAULT_ALPHABET = '/data/commonvoice-%s/alphabet.txt' % DEFAULT_LOCALE
 
-DEFAULT_BINARY_LM='/models/macsen/lm.binary'
-DEFAULT_TRIE='/models/macsen/trie'
+DEFAULT_BINARY_LM='/data/output/macsen/lm.binary'
+DEFAULT_TRIE='/models/output/macsen/trie'
 
 TEXT_CORPUS_URL="https://api.techiaith.org/assistant/get_all_sentences"
 TEXT_CORPUS_FILE="/data/macsen/corpus.txt"
