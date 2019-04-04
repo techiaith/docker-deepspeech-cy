@@ -11,11 +11,11 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 DEFAULT_LOCALE='cy'
 DEFAULT_ALPHABET = '/data/commonvoice-%s/alphabet.txt' % DEFAULT_LOCALE
 
-DEFAULT_BINARY_LM='/data/output/macsen/lm.binary'
-DEFAULT_TRIE='/models/output/macsen/trie'
+DEFAULT_BINARY_LM='/data/output/lm.binary'
+DEFAULT_TRIE='/data/output/trie'
 
 TEXT_CORPUS_URL="https://api.techiaith.org/assistant/get_all_sentences"
-TEXT_CORPUS_FILE="/data/macsen/corpus.txt"
+TEXT_CORPUS_FILE="/data/testsets/macsen/corpus.txt"
 
 DESCRIPTION = """
 
@@ -35,7 +35,7 @@ def fetch_corpus(corpus_url, corpus_file_path):
 
         tokenizer = WelshTokenization.Tokenization()
 
-        with open(corpus_file_path, 'w', encoding='utf-8') as corpus_file:
+        with open(corpus_file_path, 'a+', encoding='utf-8') as corpus_file:
             for r in data["result"]:
                 line = process_transcript(r[0])
                 line = tokenizer.tokenize(line)

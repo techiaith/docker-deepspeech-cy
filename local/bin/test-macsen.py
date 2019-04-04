@@ -31,7 +31,7 @@ except ImportError:
 BEAM_WIDTH = 500
 
 # The alpha hyperparameter of the CTC decoder. Language Model weight
-LM_ALPHA = 20
+LM_ALPHA = 0.75
 
 # The beta hyperparameter of the CTC decoder. Word insertion bonus.
 LM_BETA = 1.85
