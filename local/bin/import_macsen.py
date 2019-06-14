@@ -13,6 +13,10 @@ import language_modelling_utils
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 DESCRIPTION = """
+Llwytho i lawr setiau data ar gyfer optimeiddio a phrofi modelau DeepSpeech 
+ar gyfer yr ap Macsen.
+
+Mae angen rhoid lleoliad i ffeil alphabet.txt
 
 © Prifysgol Bangor University
 

@@ -6,12 +6,10 @@ Hyfforddi'n hwylus modelau Mozilla DeepSpeech ar gyfer adnabod lleferydd i'r Gym
 
 Mae'r darpariaeth yn hwyluso :
  - llwytho i lawr data hyfforddi, datblygu a phrofi
- - rhag prosesu gan defnyddio [CorporaCreator](https://github.com/mozilla/CorporaCreator)
  - trosi ffeiliau sain
  
  *This package features:*
   - *downloading training, development and test data sets*
-  - *preprocessing with [CorporaCreator](https://github.com/mozilla/CorporaCreator)*
   - *conversion of audio files*
 
 ## Sut i'w ddefnyddio / *How to use*

@@ -10,21 +10,9 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.d
         && pip3 install sox wget sklearn pandas virtualenv requests \
 	&& rm -rf /var/lib/apt/lists/* 
 
-ADD CorporaCreator /CorporaCreator
-RUN cd /CorporaCreator \
-	&& pip3 uninstall -y setuptools \
-	&& pip3 install setuptools==39.1.0 sox \
-	&& python3 setup.py install
-
 WORKDIR /DeepSpeech
-#RUN git checkout transfer-learning-cy
 
 ADD local/bin/* /DeepSpeech/bin/
-#ADD local/patches/compute /DeepSpeech/.compute
-#ADD local/patches/install /DeepSpeech/.install
-#ADD local/patches/check_characters.py /DeepSpeech/util/
 
 ENV PATH /DeepSpeech/native_client:/DeepSpeech/native_client/kenlm/build/bin:$PATH
-
-#RUN bash .install
 

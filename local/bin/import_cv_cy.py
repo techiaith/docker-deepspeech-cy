@@ -8,8 +8,6 @@ import csv
 import pandas as pd
 import numpy as np
 
-import corpus_creator
-
 import audio_processing_utils
 import language_modelling_utils
 
@@ -75,9 +73,6 @@ def download_data(data_root_dir, locale):
     # download cy.zip audio data
     download_common_voice_artefact(data_root_dir, locale + '.tar.gz') 
 
-    # download clips.tsv.zip
-    download_common_voice_artefact(data_root_dir, 'clips.tsv.tar.gz')
-
 
 def convert_audio(data_root_dir):
     # convert each mp3 to wav
@@ -96,7 +91,7 @@ def dataframe_to_deepspeech_csv(df, audio_files_dir, csv_file):
     csv_file_out = csv.DictWriter(open(csv_file, 'w', encoding='utf-8'), fieldnames=deepspeech_fieldnames)
     csv_file_out.writeheader()
     for index, row in df.iterrows():
-        wav_filepath = os.path.join(audio_files_dir, row["path"].replace(".mp3",".wav")) 
+        wav_filepath = os.path.join(audio_files_dir, row["path"]) + ".wav" 
         transcript = language_modelling_utils.process_transcript(row["sentence"])
         corpus.add(transcript)
         alphabet = alphabet.union(language_modelling_utils.get_alphabet(transcript)) 
@@ -116,16 +111,9 @@ def main(data_root_dir, deepspeech_csv_file, alphabet_file_path, locale, **args)
     download_data(data_root_dir, locale)
     convert_audio(os.path.join(data_root_dir, 'clips'))
 
-    clips_file_path = os.path.join(data_root_dir, 'clips.tsv')
-    if not os.path.isfile(clips_file_path):
-        print ("No clips file")
-        return
-   
-    corpus_creator.execute(data_root_dir, clips_file_path, locale)
-
     # commonvoice fieldnames
     # client_id, path, sentence, up_votes, down_votes, age, gender, accent, locale, bucket
-    corpus_df = pd.read_csv(os.path.join(data_root_dir, locale, 'validated.tsv'), delimiter='\t', encoding='utf-8')
+    corpus_df = pd.read_csv(os.path.join(data_root_dir, 'validated.tsv'), delimiter='\t', encoding='utf-8')
 
     audio_files_dir = os.path.join(data_root_dir, 'clips') 
     dataframe_to_deepspeech_csv(corpus_df, audio_files_dir, deepspeech_csv_file)
