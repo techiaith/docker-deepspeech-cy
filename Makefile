@@ -1,7 +1,7 @@
 default: build
 
 run: 
-	docker run --gpus all --name techiaith-deepspeech -it \
+	docker run --gpus all --name techiaith-deepspeech-${USER} -it \
 		-v ${PWD}/data/:/data \
 		-v ${PWD}/tmp/:/tmp \
 		-v ${PWD}/homedir/:/root \
@@ -22,6 +22,6 @@ clean:
 	sudo rm -rf homedir
 	
 stop:
-	docker stop techiaith-deepspeech
-	docker rm techiaith-deepspeech
+	docker stop techiaith-deepspeech-${USER}
+	docker rm techiaith-deepspeech-${USER}
 
