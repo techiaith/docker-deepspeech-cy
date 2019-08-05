@@ -1,7 +1,7 @@
 default: build
 
 run: 
-	nvidia-docker run --name techiaith-deepspeech -it \
+	docker run --gpus all --name techiaith-deepspeech -it \
 		-v ${PWD}/data/:/data \
 		-v ${PWD}/tmp/:/tmp \
 		-v ${PWD}/homedir/:/root \
