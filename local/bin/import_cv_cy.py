@@ -99,8 +99,8 @@ def dataframe_to_deepspeech_csv(df, audio_files_dir, csv_file):
 
 def main(data_root_dir, deepspeech_csv_file, alphabet_file_path, locale, **args):
 
-    #download_data(data_root_dir, COMMONVOICE_DOWNLOAD_URL)
-    #convert_audio(os.path.join(data_root_dir, 'clips'))
+    download_data(data_root_dir, COMMONVOICE_DOWNLOAD_URL)
+    convert_audio(os.path.join(data_root_dir, 'clips'))
 
     # commonvoice fieldnames
     # client_id, path, sentence, up_votes, down_votes, age, gender, accent, locale, bucket
