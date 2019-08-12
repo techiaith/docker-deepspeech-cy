@@ -2,6 +2,7 @@ DeepSpeech
 CorporaCreator
 *.csv
 data/*
+export/*
 homedir/*
 tmp/*
 local/bin/commonvoice_url.py

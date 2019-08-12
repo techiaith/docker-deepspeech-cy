@@ -4,7 +4,9 @@ if [ -n "${SINGULARITY_CONTAINER}" ]; then
 	cd /DeepSpeech || exit
 fi
 
-checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save_data_path("deepspeech/paldaruo"))')
+checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save_data_path("deepspeech/macsen"))')
+
+mkdir -p /export/macsen
 
 python -u DeepSpeech.py \
 	--train_files /data/commonvoice-cy/deepspeech.csv \
@@ -23,10 +25,12 @@ python -u DeepSpeech.py \
 	--dropout_rate 0.20 \
 	--default_stddev 0.046875 \
 	--checkpoint_dir "$checkpoint_dir" \
-	--export_dir /data/output \
+	--export_dir /export/macsen \
 	"$@"
 
-cp /data/commonvoice-cy/alphabet.txt /data/output/
-cp /data/testsets/macsen/trie /data/output/
-cp /data/testsets/macsen/lm.binary /data/output/
+cp /data/commonvoice-cy/alphabet.txt /export/macsen
+cp /data/testsets/macsen/trie /export/macsen
+cp /data/testsets/macsen/lm.binary /export/macsen
+
+#convert_graphdef_memmapped_format --in_graph=/export/macsen/output_graph.pb --out_graph=/export/macsen/output_graph.pbmm
 

@@ -12,7 +12,10 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.d
 
 WORKDIR /DeepSpeech
 
-ADD local/bin/* /DeepSpeech/bin/
+#RUN python3 util/taskcluster.py --source tensorflow --artifact convert_graphdef_memmapped_format --target native_client \
+#	&& chmod +x native_client/convert_graphdef_memmapped_format
+
+ADD local/bin/* /DeepSpeech/bin/bangor_welsh/
 
 ENV PATH /DeepSpeech/native_client:/DeepSpeech/native_client/kenlm/build/bin:$PATH
 
