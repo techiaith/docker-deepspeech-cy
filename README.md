@@ -24,7 +24,7 @@ Wedi i chi cofrestru'ch cyfeiriad e-bost gyda Mozilla (ar https://voice.mozilla.
 !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-COMMONVOICE_DOWNLOAD_URL_BASE = 'https://common-voice-data-download.s3.amazonaws.com/........'
+COMMONVOICE_DOWNLOAD_URL = 'https://common-voice-data-download.s3.amazonaws.com/........'
 
 ```
 
@@ -38,13 +38,15 @@ $ git clone https://github.com/techiaith/docker-deepspeech-cy.git
 $ cd docker-deepspeech-cy
 $ make
 ```
-Bydd hyn yn achosi i adeiladu amgylchedd docker.
+Bydd hyn yn achosi i'r amgylchedd adeiladu ei hun
 
 *This will build a docker build environment.*
 
-**D.S.** mae angen [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) ar eich gyfrifiadur (a chardyn â GPUs), yn ogystal a'r gyrrwyr caledwedd diweddaraf gan nvidia e.e. NVIDIA-418.56, CUDA Version: 10.1
+**D.S.** mae angen cardyn graffig â GPUs yn eich gyfrifiadur (e.e. Nvidia GeForce GTX 1080 Ti, Nvidia GeForce RTX 2080 Ti), yn ogystal a'r fersiwn diweddaraf un o [Docker](https://www.docker.com) (19.03.1, API: 1.40)
 
-***N.B.** you will need [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) on your system (and a graphics/GPU card) as well the latest hardware drivers from nvidia e.g. NVIDIA-418 , CUDA Version: 10.1*
+***N.B.** you will need a graphics card with GPUs on your system (e.g. Nvidia GeForce GTX 1080 Ti, Nvidia GeForce RTX 2080 Ti), as well the latest version of [Docker](https://www.docker.com) (19.03.1, API: 1.40)*
+
+
 
 ## Hyfforddi / *Training*
 
@@ -53,7 +55,7 @@ Bydd hyn yn achosi i adeiladu amgylchedd docker.
 
 ```
 $ make run
-root@3deb765f2438:/DeepSpeech# ./bin/import_cv_cy.py
+root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/import_cv_cy.py
 ```
 
 
@@ -68,13 +70,13 @@ Bydd hyn yn llwytho'r corpws i lawr o techiaith.cymru . Mae'n 12G mewn maint *
 *This will download the speech corpus from techiaith.cymru. It's 12Gb in size*
 
 
-### Hyfforddi ar gyfer Macsen / Training for Macsen 
+### Hyfforddi modelau ar gyfer cynorthwydd digidol Macsen / Training models for Macsen personal assistant 
 
 Gweler https://techiaith.cymru/macsen
 
 ```
-root@3deb765f2438:/DeepSpeech# ./bin/import_macsen.py
-root@3deb765f2438:/DeepSpeech# ./bin/run-macsen.sh
+root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/import_macsen.py
+root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/run-macsen.sh
 ```
 
 Bydd y gorchmynion hyn yn llwytho lawr corpws benodol bach o 4 unigolyn yn darllen holl orchmynion mae Macsen yn ei adnabod, yn ogysal a chorpws llai o orchmynion Macsen ar gyfer profi.
@@ -88,15 +90,9 @@ Mae'r sgriptiau yn prosesu ac yn echdynnu o gorpws Macsen modelau iaith, ffeilia
 
 ## Canlyniadau / *Results*
 
-Gellir dod allan o'r amgylchedd docker (`exit`) wedi i'r hyfforddiant orffen a chanfod 'checkpoints' a modelau yn:
+Gellir dod allan o'r amgylchedd docker (`exit`) wedi i'r hyfforddiant orffen a chanfod y modelau yn:
 
-*You can `exit` the docker environment after training is completed and find checkpoints and models in:*
+*You can `exit` the docker environment after training is completed and find models in:*
 
-`deepspeech-docker-cy/homedir/.local/share/deepspeech`
-
-
-
-
-
-
+`deepspeech-docker-cy/export`
 
