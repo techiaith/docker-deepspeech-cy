@@ -6,7 +6,7 @@ fi
 
 checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save_data_path("deepspeech/macsen"))')
 
-mkdir -p /export/macsen
+rm -rf /export/macsen
 
 python -u DeepSpeech.py \
 	--train_files /data/commonvoice-cy/deepspeech.csv \
@@ -27,6 +27,7 @@ python -u DeepSpeech.py \
 	--checkpoint_dir "$checkpoint_dir" \
 	--export_dir /export/macsen \
 	"$@"
+
 
 cp /data/commonvoice-cy/alphabet.txt /export/macsen
 cp /data/testsets/macsen/trie /export/macsen
