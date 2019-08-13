@@ -3,6 +3,7 @@ default: build
 run: 
 	docker run --gpus all --name techiaith-deepspeech-${USER} -it \
 		-v ${PWD}/data/:/data \
+                -v $(PWD)/../Corpws-S4C/data/corpws/:/data/corpws_s4c/audio/ \
 		-v ${PWD}/export/:/export \
 		-v ${PWD}/tmp/:/tmp \
 		-v ${PWD}/homedir/:/root \
