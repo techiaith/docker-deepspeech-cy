@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 #coding: utf-8
 import re
+import datetime
 
 valid_letters_lower = 'aáàâäbcdeéèêëfghiíìîïjlmnoóòôöprstuúùûüwẃẁŵẅyýỳŷÿ'
 valid_letters_upper = valid_letters_lower.upper()
 
 regex_letter_number = r"[" + valid_letters_lower + valid_letters_upper + r"0-9]"
 regex_not_letter_number = r"[^" + valid_letters_lower + valid_letters_upper + r"0-9]"
-regex_separator = r"[\\?!()\";/\\|`]"
+regex_separator = r"[\\,\.\?!()\";/\\|`]"
 
-regex_clitics = r"'|:|-|'CH|'ch|'I|'i|'M|'m|'N|'n|'R|'r|'TH|'th|'U|'u|'W|'w"
+regex_clitics = r":|-|'CH|'ch|'I|'i|'M|'m|'N|'n|'R|'r|'TH|'th|'U|'u|'W|'w"
 
 
-class Tokenization(object):
+class WelshTokenization(object):
 
     def __init__(self):
         pass
@@ -21,7 +22,7 @@ class Tokenization(object):
     def detokenize(self, string):
         s = string
         s = ' '.join(s)
-        s = re.sub(r' (' + regex_clitics + ')', r"\g<1>", s)
+        s = re.sub(r' (' + regex_clitics + ')$', r"\g<1>", s)
         s = re.sub(r' (' + regex_separator + ')', r"\g<1>", s)
         return s.strip()
 
@@ -37,11 +38,23 @@ class Tokenization(object):
         return s.strip().split()
 
 
+    def remove_seperators(self, string):
+        tokens = self.tokenize(string)
+        new_tokens = []
+        for tok in tokens:
+            s = re.sub(regex_separator,"", tok)
+            if len(s) > 0:
+                new_tokens.append(tok)
+
+        return self.detokenize(new_tokens)
+
+
+
 if __name__ == "__main__":
 
-    t = Tokenizer()
+    t = WelshTokenization()
     toks = t.tokenize("Beth yw'r tywydd ym Mangor?")    
     print(toks)
+    print(' '.join(toks))
     print(t.detokenize(toks))
-
 

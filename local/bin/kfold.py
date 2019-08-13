@@ -1,12 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 import os
+import sys
 import pandas as pd
 
 from sklearn.model_selection import KFold
@@ -14,6 +11,7 @@ from sklearn import datasets, linear_model
 from sklearn.model_selection import train_test_split
 
 import argparse
+
 
 def main(csvfile, dest_dir, k, **args):
 
@@ -46,10 +44,12 @@ if __name__ == '__main__':
 
     parser.add_argument('--csv', 
                         dest='csvfile',
+                        required=True,
                         help='DeepSpeech CSV file.')
 
     parser.add_argument('--dest_dir',
                         dest='dest_dir',
+                        required=True,
                         help='dest dir')
 
     parser.set_defaults(func=main)
