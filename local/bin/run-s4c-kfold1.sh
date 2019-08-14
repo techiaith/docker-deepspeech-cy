@@ -10,7 +10,7 @@ rm -rf /export/s4c
 
 python -u DeepSpeech.py \
 	--train_files /data/commonvoice-cy/deepspeech.csv \
-	--alphabet_config_path /data/corpws_s4c/alphabet.txt \
+	--alphabet_config_path bin/bangor_welsh/alphabet.txt \
 	--dev_files /data/corpws_s4c/train_1.csv \
 	--test_files /data/corpws_s4c/test_1.csv \
 	--lm_binary_path /data/corpws_s4c/lm.binary \
@@ -29,9 +29,9 @@ python -u DeepSpeech.py \
 	"$@"
 
 
-cp /data/commonvoice-cy/alphabet.txt /export/s4c
-cp /data/testsets/macsen/trie /export/s4c
-cp /data/testsets/macsen/lm.binary /export/s4c
+cp bin/bangor_welsh/alphabet.txt /export/s4c
+cp /data/corpws_s4c/trie /export/s4c
+cp /data/corpws_s4c/lm.binary /export/s4c
 
 #convert_graphdef_memmapped_format --in_graph=/export/macsen/output_graph.pb --out_graph=/export/macsen/output_graph.pbmm
 
