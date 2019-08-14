@@ -10,7 +10,7 @@ rm -rf /export/s4c
 
 python -u DeepSpeech.py \
 	--train_files /data/commonvoice-cy/deepspeech.csv \
-	--alphabet_config_path /data/commonvoice-cy/alphabet.txt \
+	--alphabet_config_path /data/corpws_s4c/alphabet.txt \
 	--dev_files /data/corpws_s4c/train_1.csv \
 	--test_files /data/corpws_s4c/test_1.csv \
 	--lm_binary_path /data/corpws_s4c/lm.binary \
