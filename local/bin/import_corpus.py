@@ -138,8 +138,9 @@ def main(corpus_root_dir, csv_file_path, alphabet_file_path, text_file_path, **a
     language_modelling_utils.save_alphabet(alphabet, alphabet_file_path)
     language_modelling_utils.save_corpus(corpus, text_file_path)
 
-    lm_binary_file_path = os.path.join(corpus_root_dir, "lm.binary")
-    trie_file_path = os.path.join(corpus_root_dir, "trie")
+    lm_root_dir = os.path.dirname(text_file_path) 
+    lm_binary_file_path = os.path.join(lm_root_dir, "lm.binary")
+    trie_file_path = os.path.join(lm_root_dir, "trie")
 
     language_modelling_utils.create_binary_language_model(lm_binary_file_path, text_file_path)
     language_modelling_utils.create_trie(trie_file_path, alphabet_file_path, lm_binary_file_path)

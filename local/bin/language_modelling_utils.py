@@ -50,6 +50,7 @@ def create_binary_language_model(lm_binary_file_path, corpus_file_path):
     # create binary language model
     lm_bin_cmd = 'build_binary -a 22 -q 8 trie  %s %s' % (arpa_file_path, lm_binary_file_path)
     execute_shell(lm_bin_cmd)
+    print ("Completed creating binary language model at %s" % (lm_binary_file_path))
 
 
 
@@ -57,4 +58,5 @@ def create_trie(trie_file_path, alphabet_file_path, lm_binary_file_path):
     # create trie
     trie_cmd = 'generate_trie %s %s %s' % (alphabet_file_path, lm_binary_file_path, trie_file_path)
     execute_shell(trie_cmd)
+    print ("Completed creating trie at %s" % trie_file_path)
 
