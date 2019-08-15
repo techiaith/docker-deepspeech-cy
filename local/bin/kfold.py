@@ -24,11 +24,11 @@ def main(csvfile, dest_dir, k, **args):
 
         train_file = os.path.join(dest_dir, 'train_' + str(fold_num) + '.csv')
         train_df = pd.DataFrame(speech_corpus_df.ix[train_indexes])
-        train_df.to_csv(train_file, sep=',', encoding='utf-8')
+        train_df.to_csv(train_file, index=False, sep=',', encoding='utf-8')
         
         test_file = os.path.join(dest_dir, 'test_' + str(fold_num) + '.csv')
         test_df = pd.DataFrame(speech_corpus_df.ix[test_indexes])
-        test_df.to_csv(test_file, sep=',', encoding='utf-8')
+        test_df.to_csv(test_file, index=False, sep=',', encoding='utf-8')
 
         print ('train: %s, test %s' % (train_indexes, test_indexes))
 
