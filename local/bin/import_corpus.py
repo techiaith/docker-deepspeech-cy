@@ -92,6 +92,13 @@ def process_corpus_files(current_dir, current_files, csv_file_out, rejected_csv_
                     continue
 
                 transcript = language_modelling_utils.process_transcript(transcript)
+                if len(transcript.strip())==0:
+                    rejected_csv_file_out.writerow({
+                        'wav_filename':wavfile_path,
+                        'transcript':'',
+                        'reason':'No transcript'})
+                    continue
+
                 corpus.add(transcript)
                 alphabet = alphabet.union(language_modelling_utils.get_alphabet(transcript))
 
