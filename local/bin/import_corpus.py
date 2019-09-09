@@ -99,6 +99,13 @@ def process_corpus_files(current_dir, current_files, csv_file_out, rejected_csv_
                         'reason':'No transcript'})
                     continue
 
+                if not audio_processing_utils.is_feasible_transcription(wavfile_path, transcript):
+                    rejected_csv_file_out.writerow({
+                        'wav_filename':wavfile_path,
+                        'transcript':transcript,
+                        'reason':'Not feasible transcript'})
+                    continue
+             
                 corpus.add(transcript)
                 alphabet = alphabet.union(language_modelling_utils.get_alphabet(transcript))
 
