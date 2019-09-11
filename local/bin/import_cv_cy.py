@@ -108,9 +108,18 @@ def main(data_root_dir, deepspeech_csv_file, alphabet_file_path, locale, **args)
 
     audio_files_dir = os.path.join(data_root_dir, 'clips') 
     dataframe_to_deepspeech_csv(corpus_df, audio_files_dir, deepspeech_csv_file)
+    
+    text_file_path = os.path.join(data_root_dir, "corpus.txt")
 
     language_modelling_utils.save_alphabet(alphabet, alphabet_file_path)
-    language_modelling_utils.save_corpus(corpus, os.path.join(data_root_dir, "corpus.txt"))
+    language_modelling_utils.save_corpus(corpus, text_file_path)
+
+    lm_root_dir = os.path.dirname(text_file_path)
+    lm_binary_file_path = os.path.join(lm_root_dir, "lm.binary")
+    trie_file_path = os.path.join(lm_root_dir, "trie")
+
+    language_modelling_utils.create_binary_language_model(lm_binary_file_path, text_file_path)
+    language_modelling_utils.create_trie(trie_file_path, alphabet_file_path, lm_binary_file_path)
 
 
 if __name__ == "__main__": 
