@@ -7,7 +7,7 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.d
 						libxslt1-dev libjpeg8-dev zlib1g-dev dos2unix\
 	&& apt-get clean \
 	&& git lfs install \
-        && pip3 install sox wget sklearn pandas python_speech_features virtualenv requests \
+        && pip3 install sox wget sklearn pandas python_speech_features virtualenv requests jiwer \
 	&& rm -rf /var/lib/apt/lists/* 
 
 WORKDIR /DeepSpeech

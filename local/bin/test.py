@@ -3,10 +3,6 @@
 from __future__ import absolute_import, division, print_function
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
-
 import argparse
 import numpy as np
 import shlex
@@ -18,7 +14,7 @@ import csv
 from deepspeech import Model, printVersions
 from timeit import default_timer as timer
 
-from wer import wer
+from jiwer import wer
 
 try:
     from shhlex import quote
@@ -102,9 +98,9 @@ def main(model, alphabet, lm, trie, testset_csv, **args):
             hypothesis = ds.stt(audio, fs)
             inference_end = timer() - inference_start
 
-            result_file.write('%s\t%s\t%s\n' % (hypothesis, row["transcript"], wer(row["transcript"].split(), hypothesis.split())))
+            result_file.write('%s\t%s\t%s\t%s\n' % (row["wav_filename"], row["transcript"], hypothesis, wer(row["transcript"], hypothesis)))
 
-            print('%s , %s. Inference took %0.3fs for %0.3fs audio file.' % (hypothesis, row["transcript"], inference_end, audio_length), file=sys.stderr)
+            print('%s,\t %s.\t Inference took %0.3fs for %0.3fs audio file.' % (row["transcript"], hypothesis, inference_end, audio_length), file=sys.stderr)
 
     result_file.close()
 
