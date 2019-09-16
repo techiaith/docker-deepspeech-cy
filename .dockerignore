@@ -4,3 +4,5 @@ homedir
 tmp
 DeepSpeech
 export
+models
+checkpoints

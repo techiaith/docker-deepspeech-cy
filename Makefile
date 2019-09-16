@@ -4,12 +4,19 @@ run:
 	docker run --gpus all --name techiaith-deepspeech-${USER} -it \
 		-v ${PWD}/data/:/data \
                 -v $(PWD)/../Corpws-S4C/data/corpws/:/data/corpws_s4c/audio/ \
+                -v ${PWD}/checkpoints/:/checkpoints \
 		-v ${PWD}/export/:/export \
 		-v ${PWD}/tmp/:/tmp \
 		-v ${PWD}/homedir/:/root \
 		techiaith/deepspeech bash
 	
 build:
+	if [ ! -d "checkpoints/mozilla" ]; then \
+	    mkdir -p checkpoints/mozilla; \
+	    cd checkpoints/mozilla && \
+		wget https://github.com/mozilla/DeepSpeech/releases/download/v0.5.1/deepspeech-0.5.1-checkpoint.tar.gz && \
+		tar xvfz deepspeech-0.5.1-checkpoint.tar.gz;\
+	fi
 	if [ ! -d "DeepSpeech" ]; then \
 	    git clone --branch v0.5.1 https://github.com/mozilla/DeepSpeech.git; \
             cd DeepSpeech && docker build --rm -t mozilla/deepspeech .; \
