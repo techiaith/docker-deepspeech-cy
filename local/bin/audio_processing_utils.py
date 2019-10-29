@@ -70,7 +70,11 @@ def audiofile_to_input_vector(audio_filename, numcep, numcontext):
 
 
 def is_feasible_transcription(wavfile, transcription):
-    aftiv_length=audiofile_to_input_vector(wavfile, 26, N_CONTEXT).shape[0] - 2*N_CONTEXT
+    try:
+        aftiv_length=audiofile_to_input_vector(wavfile, 26, N_CONTEXT).shape[0] - 2*N_CONTEXT
+    except:
+        return False
+
     return aftiv_length > len(transcription)
 
 
