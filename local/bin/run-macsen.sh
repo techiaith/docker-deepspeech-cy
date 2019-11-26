@@ -9,15 +9,15 @@ checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save
 rm -rf /export/macsen
 
 python -u DeepSpeech.py \
-	--train_files /data/commonvoice-cy/deepspeech.csv \
+	--train_files /data/commonvoice-cy/deepspeech.csv,/data/macsen/train_1.csv \
 	--alphabet_config_path /data/commonvoice-cy/alphabet.txt \
-	--dev_files /data/macsen/train_1.csv \
-	--test_files /data/macsen/test_1.csv \
+	--dev_files /data/macsen/test_2.csv \
+	--test_files /data/macsen/test_2.csv \
 	--lm_binary_path /data/macsen/lm.binary \
 	--lm_trie_path /data/macsen/trie \
 	--validation_step 10 \
 	--train_batch_size 24 \
-	--dev_batch_size 48 \
+	--dev_batch_size 24 \
 	--test_batch_size 24 \
 	--learning_rate 0.0001 \
 	--epoch 1000 \
@@ -30,8 +30,8 @@ python -u DeepSpeech.py \
 
 
 cp /data/commonvoice-cy/alphabet.txt /export/macsen
-cp /data/testsets/macsen/trie /export/macsen
-cp /data/testsets/macsen/lm.binary /export/macsen
+cp /data/macsen/trie /export/macsen
+cp /data/macsen/lm.binary /export/macsen
 
 #convert_graphdef_memmapped_format --in_graph=/export/macsen/output_graph.pb --out_graph=/export/macsen/output_graph.pbmm
 
