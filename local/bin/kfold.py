@@ -12,8 +12,7 @@ from sklearn.model_selection import train_test_split
 
 import argparse
 
-
-def main(csvfile, dest_dir, k, **args):
+def create_kfolds(csvfile, dest_dir, k):
 
     kf = KFold(n_splits=k, shuffle=True, random_state=2)
     speech_corpus_df = pd.read_csv(csvfile, encoding='utf-8')
@@ -31,6 +30,11 @@ def main(csvfile, dest_dir, k, **args):
         test_df.to_csv(test_file, index=False, sep=',', encoding='utf-8')
 
         print ('train: %s, test %s' % (train_indexes, test_indexes))
+
+
+def main(csvfile, dest_dir, k, **args):
+    create_kfolds(csvfile, dest_dir)
+
 
 
 if __name__ == '__main__':

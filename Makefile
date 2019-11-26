@@ -8,6 +8,7 @@ run:
 		-v ${PWD}/export/:/export \
 		-v ${PWD}/tmp/:/tmp \
 		-v ${PWD}/homedir/:/root \
+		-v ${PWD}/local/bin:/DeepSpeech/bin/bangor_welsh \
 		techiaith/deepspeech bash
 	
 build:

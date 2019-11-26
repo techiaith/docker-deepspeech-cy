@@ -11,10 +11,10 @@ rm -rf /export/macsen
 python -u DeepSpeech.py \
 	--train_files /data/commonvoice-cy/deepspeech.csv \
 	--alphabet_config_path /data/commonvoice-cy/alphabet.txt \
-	--dev_files /data/devsets/macsen/deepspeech.csv \
-	--test_files /data/testsets/macsen/deepspeech.csv \
-	--lm_binary_path /data/testsets/macsen/lm.binary \
-	--lm_trie_path /data/testsets/macsen/trie \
+	--dev_files /data/macsen/train_1.csv \
+	--test_files /data/macsen/test_1.csv \
+	--lm_binary_path /data/macsen/lm.binary \
+	--lm_trie_path /data/macsen/trie \
 	--validation_step 10 \
 	--train_batch_size 24 \
 	--dev_batch_size 48 \
