@@ -12,15 +12,15 @@ run:
 		techiaith/deepspeech bash
 	
 build:
+	if [ ! -d "DeepSpeech" ]; then \
+	    git clone --branch v0.6.0 https://github.com/mozilla/DeepSpeech.git; \
+            cd DeepSpeech && docker build --rm -t mozilla/deepspeech .; \
+	fi
 	if [ ! -d "checkpoints/mozilla" ]; then \
 	    mkdir -p checkpoints/mozilla; \
 	    cd checkpoints/mozilla && \
-		wget https://github.com/mozilla/DeepSpeech/releases/download/v0.5.1/deepspeech-0.5.1-checkpoint.tar.gz && \
-		tar xvfz deepspeech-0.5.1-checkpoint.tar.gz;\
-	fi
-	if [ ! -d "DeepSpeech" ]; then \
-	    git clone --branch v0.5.1 https://github.com/mozilla/DeepSpeech.git; \
-            cd DeepSpeech && docker build --rm -t mozilla/deepspeech .; \
+		wget https://github.com/mozilla/DeepSpeech/releases/download/v0.6/deepspeech-0.6.0-checkpoint.tar.gz && \
+		tar xvfz deepspeech-0.6.0-checkpoint.tar.gz;\
 	fi
 	docker build --rm -t techiaith/deepspeech .
 
