@@ -10,7 +10,7 @@ rm -rf /export/macsen
 
 python -u DeepSpeech.py \
 	--train_files /data/commonvoice-cy/deepspeech.csv,/data/macsen/train_1.csv \
-	--alphabet_config_path /data/commonvoice-cy/alphabet.txt \
+	--alphabet_config_path /data/alphabet.txt \
 	--dev_files /data/macsen/test_2.csv \
 	--test_files /data/macsen/test_2.csv \
 	--lm_binary_path /data/macsen/lm.binary \
