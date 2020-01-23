@@ -1,4 +1,5 @@
 default: build
+DEEPSPEECH_RELEASE := 0.6.1
 
 run: 
 	docker run --gpus all --name techiaith-deepspeech-${USER} -it \
@@ -13,14 +14,14 @@ run:
 	
 build:
 	if [ ! -d "DeepSpeech" ]; then \
-	    git clone --branch v0.6.0 https://github.com/mozilla/DeepSpeech.git; \
+	    git clone --branch v$(DEEPSPEECH_RELEASE) https://github.com/mozilla/DeepSpeech.git; \
             cd DeepSpeech && docker build --rm -t mozilla/deepspeech .; \
 	fi
 	if [ ! -d "checkpoints/mozilla" ]; then \
 	    mkdir -p checkpoints/mozilla; \
 	    cd checkpoints/mozilla && \
-		wget https://github.com/mozilla/DeepSpeech/releases/download/v0.6/deepspeech-0.6.0-checkpoint.tar.gz && \
-		tar xvfz deepspeech-0.6.0-checkpoint.tar.gz;\
+		wget https://github.com/mozilla/DeepSpeech/releases/download/v$(DEEPSPEECH_RELEASE)/deepspeech-$(DEEPSPEECH_RELEASE)-checkpoint.tar.gz && \
+		tar xvfz deepspeech-$(DEEPSPEECH_RELEASE)-checkpoint.tar.gz;\
 	fi
 	docker build --rm -t techiaith/deepspeech .
 

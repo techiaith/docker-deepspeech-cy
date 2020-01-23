@@ -25,7 +25,7 @@ Mae angen rhoid lleoliad i ffeil alphabet.txt
 
 alphabet = set()
 
-MACSEN_DATASET_URL ="http://techiaith.cymru/deepspeech/macsen/macsen_191210.tar.gz"
+MACSEN_DATASET_URL ="http://techiaith.cymru/deepspeech/macsen/macsen_200121.tar.gz"
 
 
 def wget_macsen_dataset(data_root_dir):
