@@ -5,13 +5,16 @@ if [ -n "${SINGULARITY_CONTAINER}" ]; then
 fi
 
 checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save_data_path("deepspeech/gwion-tl-lleisiwr"))')
+export_dir=/export/gwion-tl-lleisiwr
+summary_dir=/keep/transfer/summaries
 
-echo $checkpoint_dir
-
+rm -rf $checkpoint_dir
+rm -rf $export_dir
+rm -rf $summary_dir
 
 python -u /DeepSpeech/DeepSpeech.py \
 	--train_files /data/corpws_lleisiwr/corpws_gwion/train_1.csv \
-	--test_files /data/corpws_lleisiwr/corpws_gwion/test_2.csv \
+	--test_files /data/corpws_lleisiwr/corpws_gwion/test_1.csv \
 	--alphabet_config_path /DeepSpeech/bin/bangor_welsh/alphabet.txt \
 	--lm_binary_path /data/corpws_lleisiwr/corpws_gwion/lm.binary \
 	--lm_trie_path /data/corpws_lleisiwr/corpws_gwion/trie \
@@ -23,17 +26,7 @@ python -u /DeepSpeech/DeepSpeech.py \
 	--test_batch_size 48 \
 	--dev_batch_size 48 \
 	--checkpoint_dir "$checkpoint_dir" \
-	--summary_dir /keep/transfer/summaries \
-	--export_dir /export/gwion-tl-lleisiwr \
+	--summary_dir "$summary_dir" \
+	--export_dir "$export_dir" \
 	"$@"
-
-
-#cp bin/bangor_welsh/alphabet.txt /export/CofnodYCynulliad
-
-#cp /data/corpws_tts/trie /export/CofnodYCynulliad
-#cp /data/corpws_tts/lm.binary /export/CofnodYCynulliad
-
-#convert_graphdef_memmapped_format --in_graph=/export/macsen/output_graph.pb --out_graph=/export/macsen/output_graph.pbmm
-
-#!/bin/bash
 
