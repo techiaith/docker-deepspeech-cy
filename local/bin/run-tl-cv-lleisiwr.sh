@@ -20,8 +20,8 @@ python -u /DeepSpeech/DeepSpeech.py \
 	--lm_trie_path /data/corpws_lleisiwr/corpws_gwion/trie \
         --source_model_checkpoint_dir /checkpoints/mozilla/deepspeech-0.5.1-checkpoint \
 	--nofine_tune \
-	--epochs 10 \
-	--drop_source_layers 1 \
+	--epochs 20 \
+	--drop_source_layers 2 \
 	--train_batch_size 48 \
 	--test_batch_size 48 \
 	--dev_batch_size 48 \
