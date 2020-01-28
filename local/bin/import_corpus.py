@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 import os
 import sys
 import csv
@@ -10,7 +9,7 @@ import hashlib
 import wget
 import shutil
 
-import kaldi_preprocessor
+from text_preprocessor import TextPreProcessor
 import audio_processing_utils
 import language_modelling_utils
 
@@ -29,7 +28,6 @@ Hawlfraint / Copyright Prifysgol Bangor University
 
 """
 
-alphabet = set()
 corpus = set()
 
 
@@ -58,19 +56,20 @@ def get_duration_wav(wavfile):
     return duration
 
 
-def process_corpus_files(current_dir, current_files, csv_file_out, rejected_csv_file_out):
-    global alphabet
+def process_corpus_files(current_dir, current_files, alphabet_file_path, csv_file_out, rejected_csv_file_out):
     global corpus
+
+    text_preprocessor = TextPreProcessor(alphabet_file_path)
 
     for wavfile in current_files:
 
         wavfile_path = os.path.join(current_dir, wavfile)
 
         if os.path.isdir(wavfile_path):
-            process_corpus_files(current_dir, current_files[wavfile], csv_file_out, rejected_csv_file_out, corpus_file_out)
+            process_corpus_files(current_dir, current_files[wavfile], alphabet_file_path, csv_file_out, rejected_csv_file_out)
 
         if wavfile.endswith(".wav"):
-            txtfile_path = wavfile_path.replace(".wav",".txt")
+            txtfile_path = wavfile_path.replace(".wav", ".txt")
 
             if not os.path.isfile(txtfile_path):
                 continue
@@ -81,22 +80,20 @@ def process_corpus_files(current_dir, current_files, csv_file_out, rejected_csv_
                 hashed_wavfile_path = hashlib.md5(wavfile_path.encode('utf-8')).hexdigest()
                 tagged_transcript = txtfile.read()
 
-                transcript = kaldi_preprocessor.remove_tags(tagged_transcript).upper()
-                transcript = kaldi_preprocessor.clean(transcript)
-
-                if kaldi_preprocessor.has_background(tagged_transcript):
+                if text_preprocessor.has_background(tagged_transcript):
                     rejected_csv_file_out.writerow({
                         'wav_filename':wavfile_path,
                         'transcript': tagged_transcript,
-                        'reason': "Background music/noise"})
+                        'reason': "Tagged as having background music/noise"})
                     continue
 
-                transcript = language_modelling_utils.process_transcript(transcript)
-                if len(transcript.strip())==0:
+                success, reason, transcript = text_preprocessor.clean(tagged_transcript)
+
+                if success is False:
                     rejected_csv_file_out.writerow({
                         'wav_filename':wavfile_path,
-                        'transcript':'',
-                        'reason':'No transcript'})
+                        'transcript':transcript,
+                        'reason':reason})
                     continue
 
                 if not audio_processing_utils.is_feasible_transcription(wavfile_path, transcript):
@@ -107,7 +104,6 @@ def process_corpus_files(current_dir, current_files, csv_file_out, rejected_csv_
                     continue
              
                 corpus.add(transcript)
-                alphabet = alphabet.union(language_modelling_utils.get_alphabet(transcript))
 
                 csv_file_out.writerow({
                     'wav_filename':wavfile_path,
@@ -115,11 +111,11 @@ def process_corpus_files(current_dir, current_files, csv_file_out, rejected_csv_
                     'wav_date':os.path.getmtime(wavfile_path),
                     'transcript': transcript,
                     'wav_fileid':hashed_wavfile_path,
-                    'speakerid':kaldi_preprocessor.get_speaker_id(tagged_transcript),
+                    'speakerid':text_preprocessor.get_speaker_id(tagged_transcript),
                     'duration': get_duration_wav(wavfile_path),
-                    'accent': kaldi_preprocessor.get_accent(tagged_transcript),
-                    'gender': kaldi_preprocessor.get_gender(tagged_transcript),
-                    'age':kaldi_preprocessor.get_age(tagged_transcript),
+                    'accent': text_preprocessor.get_accent(tagged_transcript),
+                    'gender': text_preprocessor.get_gender(tagged_transcript),
+                    'age': text_preprocessor.get_age(tagged_transcript),
                     })
 
 
@@ -138,11 +134,10 @@ def main(corpus_root_dir, csv_file_path, alphabet_file_path, text_file_path, **a
 
     corpus_file_out = open(text_file_path, "w", encoding='utf-8')
 
-    process_corpus_files(corpus_root_dir, corpus_files, csv_file_out, rejected_csv_file_out)
+    process_corpus_files(corpus_root_dir, corpus_files, alphabet_file_path, csv_file_out, rejected_csv_file_out)
 
     corpus_file_out.close()
 
-    language_modelling_utils.save_alphabet(alphabet, alphabet_file_path)
     language_modelling_utils.save_corpus(corpus, text_file_path)
 
     lm_root_dir = os.path.dirname(text_file_path) 

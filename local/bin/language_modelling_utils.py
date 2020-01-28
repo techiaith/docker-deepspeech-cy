@@ -33,13 +33,6 @@ def save_corpus(corpus, corpus_file_path):
             corpus_file.write(l + '\n')
 
 
-def process_transcript(orig_transcript):
-    transcript = orig_transcript.replace("_"," ")
-    transcript = transcript.replace("-"," ")
-    transcript = transcript.lower()
-    return transcript 
-
-
 def create_binary_language_model(lm_binary_file_path, corpus_file_path):
 
     # create arpa language model 

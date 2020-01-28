@@ -27,6 +27,9 @@ def downsample_wavfile(wavfile):
 
 def convert_mp3(mp3file):
     wavfile = mp3file.replace(".mp3",".wav")
+    if os.path.isfile(wavfile):
+        return
+
     try:
         transform_audio(mp3file, wavfile)
         return True
