@@ -8,24 +8,20 @@ checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save
 
 echo $checkpoint_dir
 
-rm -rf /export/gwion-tl-lleisiwr
 
 python -u /DeepSpeech/DeepSpeech.py \
-	--train_files /data/corpws_lleisiwr/corpws_gwion/train_2.csv \
+	--train_files /data/corpws_lleisiwr/corpws_gwion/train_1.csv \
 	--test_files /data/corpws_lleisiwr/corpws_gwion/test_2.csv \
-	--alphabet_config_path /data/alphabet.txt \
+	--alphabet_config_path /DeepSpeech/bin/bangor_welsh/alphabet.txt \
 	--lm_binary_path /data/corpws_lleisiwr/corpws_gwion/lm.binary \
 	--lm_trie_path /data/corpws_lleisiwr/corpws_gwion/trie \
-	--source_model_checkpoint_dir /keep/en/deepspeech-0.5.1-checkpoint \
+        --source_model_checkpoint_dir /checkpoints/mozilla/deepspeech-0.5.1-checkpoint \
 	--nofine_tune \
 	--epochs 10 \
 	--drop_source_layers 1 \
 	--train_batch_size 48 \
 	--test_batch_size 48 \
 	--dev_batch_size 48 \
-	--validation_step 5 \
-	--display_step 5 \
-	--learing_rate 0.000001 \
 	--checkpoint_dir "$checkpoint_dir" \
 	--summary_dir /keep/transfer/summaries \
 	--export_dir /export/gwion-tl-lleisiwr \

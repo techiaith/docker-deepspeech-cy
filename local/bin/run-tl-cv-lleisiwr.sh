@@ -23,9 +23,6 @@ python -u /DeepSpeech/DeepSpeech.py \
 	--train_batch_size 48 \
 	--test_batch_size 48 \
 	--dev_batch_size 48 \
-	--validation_step 5 \
-	--display_step 5 \
-	--learing_rate 0.000001 \
 	--checkpoint_dir "$checkpoint_dir" \
 	--summary_dir /keep/transfer/summaries \
 	--export_dir /export/tl-cv-lleisiwr \

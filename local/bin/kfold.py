@@ -33,7 +33,7 @@ def create_kfolds(csvfile, dest_dir, k):
 
 
 def main(csvfile, dest_dir, k, **args):
-    create_kfolds(csvfile, dest_dir)
+    create_kfolds(csvfile, dest_dir, k)
 
 
 
