@@ -13,7 +13,7 @@ rm -rf $export_dir
 rm -rf $summary_dir
 
 python -u /DeepSpeech/DeepSpeech.py \
-	--train_files  /data/commonvoice-cy/deepspeech.csv,/data/corpws_lleisiwr/corpws_gwion/train_1.csv \
+	--train_files  /data/commonvoice-cy/deepspeech.csv \
 	--test_files /data/corpws_lleisiwr/corpws_gwion/test_1.csv \
 	--alphabet_config_path /DeepSpeech/bin/bangor_welsh/alphabet.txt \
 	--lm_binary_path /data/corpws_lleisiwr/corpws_gwion/lm.binary \
