@@ -36,6 +36,10 @@ class TextPreProcessor(object):
         pass
 
 
+    def get_alphabet(self):
+        return self.tokenizer.get_alphabet()
+
+
     def clean(self, transcript):
         """
         Cleans up the given sentence removing any markup and normalizing non-alpha characters 

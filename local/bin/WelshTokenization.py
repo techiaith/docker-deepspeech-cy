@@ -67,6 +67,9 @@ class WelshTokenization(object):
         return set(string) - self.valid_alphabet
 
 
+    def get_alphabet(self):
+        return self.valid_alphabet
+
 
 if __name__ == "__main__":
 
