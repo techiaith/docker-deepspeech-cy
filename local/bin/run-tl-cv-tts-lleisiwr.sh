@@ -4,11 +4,12 @@ if [ -n "${SINGULARITY_CONTAINER}" ]; then
 	cd /DeepSpeech || exit
 fi
 
-checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save_data_path("deepspeech/gwion-tl-cv-lleisiwr"))')
-export_dir=/export/gwion-tl-cv-lleisiwr
+checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save_data_path("deepspeech/gwion-tl-cv-tts-lleisiwr"))')
+
+export_dir=/export/gwion-tl-cv-tts-lleisiwr
 summary_dir=/keep/transfer/summaries
-alphabet_file=/DeepSpeech/bin/bangor_welsh/alphabet_tl_cv_lleisiwr.txt
-train_files=/data/commonvoice-cy/deepspeech.csv
+alphabet_file=/DeepSpeech/bin/bangor_welsh/alphabet.txt
+train_files=/data/commonvoice-cy/deepspeech.csv,/data/corpws_tts/gwion/CofnodYCynulliad/deepspeech.csv
 test_files=/data/corpws_lleisiwr/corpws_gwion/deepspeech.csv
 
 rm -rf $checkpoint_dir

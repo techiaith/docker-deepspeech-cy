@@ -5,7 +5,7 @@ import glob
 import argparse
 import pandas as pd
 from tqdm import tqdm
-
+from collections import Counter
 from text_preprocessor import TextPreProcessor
 
 
@@ -23,6 +23,8 @@ text_preprocessor = TextPreProcessor(args.alphabet)
 df_from_each_file = (pd.read_csv(f, encoding="utf-8", usecols=["wav_filename", "wav_filesize", "transcript"]) for f in all_files)
 concatenated_df = pd.concat(df_from_each_file, ignore_index=True, sort=False)
 
+char_counter = Counter()
+
 print ("Checking alphabet....")
 for index, row in tqdm(concatenated_df.iterrows(), total=concatenated_df.shape[0]):
     if not pd.isnull(row["transcript"]) :
@@ -30,9 +32,11 @@ for index, row in tqdm(concatenated_df.iterrows(), total=concatenated_df.shape[0
         if success==False:
             print (transcript, reason)
             continue
-          
+        char_counter += Counter(transcript)          
         alphabet = alphabet.union(set(transcript))
-   
+
+print (char_counter)
+  
 alpha_diff = text_preprocessor.get_alphabet() - alphabet
 if len(alpha_diff) > 0:
     print ("WARNING! Characters in alphabet, but not in datasets")
