@@ -37,10 +37,19 @@ def convert_audio(data_root_dir):
 
 
 
-def dataframe_to_deepspeech_csv(df, audio_files_dir, alphabet_file_path, csv_file_out, rejected_csv_file_out):
+def dataframe_to_deepspeech_csv(df, audio_files_dir, alphabet_file_path, csv_file_path):
     global corpus
 
     text_preprocessor = TextPreProcessor(alphabet_file_path)
+
+    deepspeech_fieldnames = ['wav_filename', 'wav_filesize', 'transcript', 'age', 'gender', 'accent', 'dataset']
+    csv_file_out = csv.DictWriter(open(csv_file_path, 'w', encoding='utf-8'), fieldnames=deepspeech_fieldnames)
+    csv_file_out.writeheader()
+
+    rejected_csv_fieldnames = ['wav_filename', 'transcript', 'reason']
+    rejected_csv_file_path = csv_file_path.replace(".csv",".rejected.csv")
+    rejected_csv_file_out = csv.DictWriter(open(rejected_csv_file_path, 'w', encoding='utf-8'), fieldnames=rejected_csv_fieldnames)
+    rejected_csv_file_out.writeheader()
 
     print ("Processing sentences....")
     for index, row in tqdm(df.iterrows(), total=df.shape[0]):
@@ -83,20 +92,23 @@ def main(data_root_dir, csv_file_path, alphabet_file_path, text_file_path, **arg
     audio_files_dir = os.path.join(data_root_dir, 'clips') 
     convert_audio(audio_files_dir)
 
-    deepspeech_fieldnames = ['wav_filename', 'wav_filesize', 'transcript', 'age', 'gender', 'accent', 'dataset']
-    csv_file_out = csv.DictWriter(open(csv_file_path, 'w', encoding='utf-8'), fieldnames=deepspeech_fieldnames)
-    csv_file_out.writeheader()
-
-    rejected_csv_fieldnames = ['wav_filename', 'transcript', 'reason']
-    rejected_csv_file_path = csv_file_path.replace(".csv",".rejected.csv")
-    rejected_csv_file_out = csv.DictWriter(open(rejected_csv_file_path, 'w', encoding='utf-8'), fieldnames=rejected_csv_fieldnames)
-    rejected_csv_file_out.writeheader()
 
     # commonvoice fieldnames
     # client_id, path, sentence, up_votes, down_votes, age, gender, accent,...
-    corpus_df = pd.read_csv(os.path.join(data_root_dir, 'validated.tsv'), delimiter='\t', encoding='utf-8')
-    dataframe_to_deepspeech_csv(corpus_df, audio_files_dir, alphabet_file_path, csv_file_out, rejected_csv_file_out)
-   
+    validated_corpus_df = pd.read_csv(os.path.join(data_root_dir, 'validated.tsv'), delimiter='\t', encoding='utf-8')
+    dataframe_to_deepspeech_csv(validated_corpus_df, audio_files_dir, alphabet_file_path, csv_file_path.replace(".csv",".validated.csv"))
+
+    train_corpus_df = pd.read_csv(os.path.join(data_root_dir, 'train.tsv'), delimiter='\t', encoding='utf-8')
+    dataframe_to_deepspeech_csv(train_corpus_df, audio_files_dir, alphabet_file_path, csv_file_path.replace(".csv",".train.csv"))
+     
+    dev_corpus_df = pd.read_csv(os.path.join(data_root_dir, 'dev.tsv'), delimiter='\t', encoding='utf-8')
+    dataframe_to_deepspeech_csv(dev_corpus_df, audio_files_dir, alphabet_file_path, csv_file_path.replace(".csv",".dev.csv"))
+    
+    test_corpus_df = pd.read_csv(os.path.join(data_root_dir, 'test.tsv'), delimiter='\t', encoding='utf-8')
+    dataframe_to_deepspeech_csv(test_corpus_df, audio_files_dir, alphabet_file_path, csv_file_path.replace(".csv",".test.csv"))
+
+
+    # 
     language_modelling_utils.save_corpus(corpus, text_file_path)
 
     lm_root_dir = os.path.dirname(text_file_path)
