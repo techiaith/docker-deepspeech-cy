@@ -27,7 +27,7 @@ python -u /DeepSpeech/DeepSpeech.py \
 	--lm_binary_path /data/commonvoice-cy/lm.binary \
 	--lm_trie_path /data/commonvoice-cy/trie \
 	--epochs 50 \
-	--drop_source_layers 2 \
+	--drop_source_layers 1 \
 	--nofine_tune \
 	--source_model_checkpoint_dir /checkpoints/mozilla/deepspeech-0.5.1-checkpoint \
 	--train_batch_size 48 \

@@ -1,7 +1,7 @@
 default: build
 DEEPSPEECH_RELEASE := 0.5.1
 #DEEPSPEECH_BRANCH := v$(DEEPSPEECH_RELEASE)
-DEEPSPEECH_BRANCH := transfer-learning2 # := v$(DEEPSPEECH_RELEASE)
+DEEPSPEECH_BRANCH := transfer-learning2
 
 run: 
 	docker run --gpus all --name techiaith-deepspeech-${USER} -it \
@@ -16,8 +16,8 @@ run:
 build:
 	if [ ! -d "DeepSpeech" ]; then \
 	    git clone --branch $(DEEPSPEECH_BRANCH) https://github.com/mozilla/DeepSpeech.git; \
+	    cd DeepSpeech && docker build --rm -t mozilla/deepspeech .; \
 	fi
-	cd DeepSpeech && docker build --rm -t mozilla/deepspeech .; \
 	if [ ! -d "checkpoints/mozilla" ]; then \
 	    mkdir -p checkpoints/mozilla; \
 	    cd checkpoints/mozilla && \
