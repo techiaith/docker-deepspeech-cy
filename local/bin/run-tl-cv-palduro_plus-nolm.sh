@@ -4,8 +4,8 @@ if [ -n "${SINGULARITY_CONTAINER}" ]; then
 	cd /DeepSpeech || exit
 fi
 
-checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save_data_path("deepspeech/tl-cv-paldaruo-newydd"))')
-export_dir=/export/tl-cv
+checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save_data_path("deepspeech/tl-cv-paldaruo-newydd-nolm"))')
+export_dir=/export/tl-cv-nolm
 summary_dir=/keep/transfer/summaries
 alphabet_file=/DeepSpeech/bin/bangor_welsh/alphabet.txt
 train_files=/data/commonvoice-cy/deepspeech.csv
@@ -21,11 +21,9 @@ python -u /DeepSpeech/DeepSpeech.py \
 	--train_files  "$train_files" \
 	--test_files "$test_files" \
 	--alphabet_config_path "$alphabet_file" \
-	--lm_binary_path /data/paldaruo/lm.binary \
-	--lm_trie_path /data/paldaruo/trie \
         --source_model_checkpoint_dir /checkpoints/mozilla/deepspeech-0.5.1-checkpoint \
 	--nofine_tune \
-	--epochs 5 \
+	--epochs 20 \
 	--drop_source_layers 2 \
 	--train_batch_size 48 \
 	--test_batch_size 24 \

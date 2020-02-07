@@ -12,6 +12,7 @@ import kfold
 import audio_processing_utils
 import language_modelling_utils
 
+from text_preprocessor import TextPreProcessor
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 DESCRIPTION = """
@@ -44,11 +45,6 @@ def wget_macsen_dataset(data_root_dir):
         os.remove(os.path.join(data_root_dir, tarfile_filename))
 
 
-def simple_tokenizer(raw_text):
-    result = raw_text.replace('?','')
-    result = result.replace("'",'')
-    return result
-
 
 def get_directory_structure(rootdir):
     dir = {}
@@ -65,22 +61,17 @@ def get_directory_structure(rootdir):
 
 def main(data_root_dir, alphabet_file_path, **args):
 
+    total_duration = 0.0
+    text_preprocessor = TextPreProcessor(alphabet_file_path)
+
     wget_macsen_dataset(data_root_dir)
     csv_file_path = os.path.join(data_root_dir, "deepspeech.csv")
 
     macsen_files = get_directory_structure(data_root_dir)
-    moz_fieldnames = ['wav_filename', 'wav_filesize', 'transcript']
+    moz_fieldnames = ['wav_filename', 'wav_filesize', 'transcript','duration']
     csv_file_out = csv.DictWriter(open(csv_file_path, 'w', encoding='utf-8'), fieldnames=moz_fieldnames)
     csv_file_out.writeheader()
 
-    # open alphabet file 
-    with open(alphabet_file_path, 'r', encoding='utf-8') as alphabet_file:
-        for c in alphabet_file:
-            c = c.rstrip()
-            if len(c) == 0:
-                c = ' '   
-            alphabet.add(c)
-    
     for user in macsen_files['macsen']['clips']:
         for wavfile in macsen_files['macsen']['clips'][user]:
             if wavfile.endswith(".wav"):
@@ -88,19 +79,23 @@ def main(data_root_dir, alphabet_file_path, **args):
                 txtfilepath = wavfilepath.replace(".wav",".txt")
                 with open(txtfilepath, "r", encoding='utf-8') as txtfile:
                     transcript = txtfile.read()
-                    transcript = transcript.lower()
-              
-                if set(transcript).issubset(alphabet):
+
+                success, reason, transcript = text_preprocessor.clean(transcript)
+
+                if success: 
                     duration = audio_processing_utils.get_duration_wav(wavfilepath)
+                    total_duration = total_duration + duration
                     if audio_processing_utils.downsample_wavfile(wavfilepath):
                         print (wavfilepath)
                         csv_file_out.writerow({
                             'wav_filename':wavfilepath, 
                             'wav_filesize':os.path.getsize(wavfilepath), 
-                            'transcript':transcript
+                            'transcript':transcript,
+                            'duration':duration
                         }) 
                 else:
-                    print ('### %s contains non-alphabet characters: %s' % (transcript, set(transcript) - alphabet))
+                    print (wavfilepath, transcript, reason)
+
 
     corpus_file_path = os.path.join(data_root_dir, "corpus.txt")
     lm_binary_file_path = os.path.join(data_root_dir, "lm.binary")
@@ -111,7 +106,7 @@ def main(data_root_dir, alphabet_file_path, **args):
 
     kfold.create_kfolds(csv_file_path, data_root_dir, 10)
 
-    print ("Import Macsen data to %s finished. Associated lm and trie files at %s and %s" % (data_root_dir, lm_binary_file_path, trie_file_path))
+    print ("Import Macsen data to %s finished. Duration %ss . Associated lm and trie files at %s and %s" % (data_root_dir, total_duration, lm_binary_file_path, trie_file_path))
 
 
 

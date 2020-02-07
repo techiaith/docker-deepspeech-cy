@@ -1,7 +1,7 @@
 default: build
-DEEPSPEECH_RELEASE := 0.5.1
-#DEEPSPEECH_BRANCH := v$(DEEPSPEECH_RELEASE)
-DEEPSPEECH_BRANCH := transfer-learning2
+DEEPSPEECH_RELEASE := 0.6.1
+DEEPSPEECH_BRANCH := v$(DEEPSPEECH_RELEASE)
+#DEEPSPEECH_BRANCH := transfer-learning2
 
 run: 
 	docker run --gpus all --name techiaith-deepspeech-${USER} -it \

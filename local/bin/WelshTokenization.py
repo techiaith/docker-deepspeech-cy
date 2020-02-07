@@ -18,6 +18,7 @@ class WelshTokenization(object):
        
     def load_alphabet(self, alphabet_file_path):
         alpha = set()
+        alpha.add(' ')
         with open(alphabet_file_path, 'r', encoding='utf-8') as alphabet_file:
             for letter in alphabet_file:
                 alpha.add(letter.strip().lower())

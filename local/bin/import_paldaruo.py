@@ -46,9 +46,6 @@ DEFAULT_PALDARUO_DIR = '/data/paldaruo'
 DEFAULT_PALDARUO_ALPHABET = '/DeepSpeech/bin/bangor_welsh/alphabet.txt'
 DEFAULT_PALDARUO_CSV = '/data/paldaruo/deepspeech.csv'
 
-prompts = {}
-
-corpus = set()
 bad_utterances = set()
 
 def execute_shell(cmd):
@@ -83,13 +80,13 @@ def git_lfs_clone_paldaruo(corpus_dir):
 def unzip_zips(corpus_dir):       
     wav_zips_root = os.path.join(corpus_dir, 'audio', 'wav')
     if os.path.exists(wav_zips_root): 
-        for file in os.listdir(os.path.join(wav_zips_root)):
+        for file in os.listdir(wav_zips_root):
             if file.endswith(".zip"):
                 with zipfile.ZipFile(os.path.join(wav_zips_root,file)) as paldaruo_zipfile:
                     print (file)
-                    paldaruo_zipfile.extractall(corpus_dir)
+                    paldaruo_zipfile.extractall(wav_zips_root)
         
-        shutil.rmtree(wav_zips_root) 
+        #shutil.rmtree(wav_zips_root) 
 
 
 def get_directory_structure(rootdir):
@@ -108,6 +105,7 @@ def get_directory_structure(rootdir):
 
 
 def get_prompts(sourcefile):
+    prompts = dict()
     with open(sourcefile,'r', encoding='utf-8') as prompts_file:
         for line in prompts_file:
             elements = line.rstrip().split(' ',1)
@@ -126,9 +124,9 @@ def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file_path, paldaruo_ui
 
     paldaruo_files = get_directory_structure(paldaruo_root_dir)
     paldaruo_metadata = csv.DictReader(open(os.path.join(paldaruo_root_dir,'metadata.csv'), 'r', encoding='utf-8'))
-    get_prompts(os.path.join(paldaruo_root_dir, 'samples.txt'))
+    prompts = get_prompts(os.path.join(paldaruo_root_dir, 'samples.txt'))
    
-    moz_fieldnames = ['wav_filename', 'wav_filesize', 'transcript', 'amlder', 'byw', 'iaithgyntaf', 'plentyndod', 'rhanbarth', 'cyd_destun', 'rhyw', 'blwyddyngeni']
+    moz_fieldnames = ['wav_filename', 'wav_filesize', 'transcript', 'duration', 'amlder', 'byw', 'iaithgyntaf', 'plentyndod', 'rhanbarth', 'cyd_destun', 'rhyw', 'blwyddyngeni']
     csv_file_out = csv.DictWriter(open(deepspeech_csv_file, 'w', encoding='utf-8'), fieldnames=moz_fieldnames)
     csv_file_out.writeheader()
 
@@ -140,16 +138,17 @@ def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file_path, paldaruo_ui
     # @todo - allbynnu metadata eraill i (ail) ffeil csv (paldaruo.csv) 
     # uid,amlder,byw,iaithgyntaf,ysgoluwchradd,plentyndod,rhanbarth,cyd_destun,rhyw,blwyddyngeni
 
+    total_duration = 0.0
     text_preprocessor = TextPreProcessor(alphabet_file_path)
 
     for row in paldaruo_metadata:
         uid=row['uid']
-
         print (uid)
-        if os.path.isdir(os.path.join(paldaruo_root_dir, uid)):
+        wav_files_root=os.path.join(paldaruo_root_dir, 'audio', 'wav', uid)
+        if os.path.isdir(wav_files_root):
             for top in paldaruo_files:
-                for wavfile in paldaruo_files[top][uid]:
-                    filepath=os.path.join(paldaruo_root_dir, uid, wavfile)
+                for wavfile in paldaruo_files[top]['audio']['wav'][uid]:
+                    filepath=os.path.join(wav_files_root, wavfile)
                     if not os.path.isfile(filepath): continue
                     if wavfile.startswith("silence"): continue
                     if audio_processing_utils.get_duration_wav(filepath) < 5 : continue
@@ -175,39 +174,27 @@ def main(paldaruo_root_dir, deepspeech_csv_file, alphabet_file_path, paldaruo_ui
                                 'reason':'Not feasible transcript'})
                             continue
 
-                        corpus.add(transcript)
+                        duration = audio_processing_utils.get_duration_wav(filepath)
+                        total_duration = total_duration + duration
 
-                        hashed_filename = hashlib.md5(filepath.encode('utf-8')).hexdigest()
-
-                        if uid + '_' + hashed_filename not in bad_utterances:
-                            output_entry = {
-                                'wav_filename':filepath,
-                                'wav_filesize':os.path.getsize(filepath),
-                                'transcript':transcript.encode('utf-8'),
-                                'amlder': row['amlder'],
-                                'byw': row['byw'],
-                                'iaithgyntaf': row['iaithgyntaf'],
-                                'plentyndod': row['plentyndod'],
-                                'rhanbarth': row['rhanbarth'],
-                                'cyd_destun': row['cyd_destun'],
-                                'rhyw': row['rhyw'],
-                                'blwyddyngeni': row['blwyddyngeni']
-                            }
-                            print (filepath, os.path.getsize(filepath), transcript.encode('utf-8'))
-                            csv_file_out.writerow(output_entry)
+                        output_entry = {
+                            'wav_filename':filepath,
+                            'wav_filesize':os.path.getsize(filepath),
+                            'transcript':transcript,
+                            'duration':duration,
+                            'amlder': row['amlder'],
+                            'byw': row['byw'],
+                            'iaithgyntaf': row['iaithgyntaf'],
+                            'plentyndod': row['plentyndod'],
+                            'rhanbarth': row['rhanbarth'],
+                            'cyd_destun': row['cyd_destun'],
+                            'rhyw': row['rhyw'],
+                            'blwyddyngeni': row['blwyddyngeni']
+                        }
+                        csv_file_out.writerow(output_entry)
 
     #
-    text_file_path=os.path.join(paldaruo_root_dir,"corpus.txt")
-
-    language_modelling_utils.save_corpus(corpus, text_file_path)
-    lm_root_dir = os.path.dirname(text_file_path)
-    lm_binary_file_path = os.path.join(lm_root_dir, "lm.binary")
-    trie_file_path = os.path.join(lm_root_dir, "trie")
-
-    language_modelling_utils.create_binary_language_model(lm_binary_file_path, text_file_path)
-    language_modelling_utils.create_trie(trie_file_path, alphabet_file_path, lm_binary_file_path)
-
-    print ("Import paldaruo to %s finished. " % (paldaruo_root_dir))
+    print ("Import paldaruo to %s finished. Duration %s" % (paldaruo_root_dir, total_duration))
 
 
              
@@ -215,9 +202,9 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter)
 
-    parser.add_argument("-a", dest="alphabet_file_path", default=DEFAULT_PALDARUO_ALPHABET)
-    parser.add_argument("-i", dest="paldaruo_root_dir", default=DEFAULT_PALDARUO_DIR)
-    parser.add_argument("-o", dest="deepspeech_csv_file", default=DEFAULT_PALDARUO_CSV)
+    parser.add_argument("-a", dest="alphabet_file_path", required=True)
+    parser.add_argument("-i", dest="paldaruo_root_dir", required=True)
+    parser.add_argument("-o", dest="deepspeech_csv_file", required=True)
 
     parser.set_defaults(func=main)
     args = parser.parse_args()

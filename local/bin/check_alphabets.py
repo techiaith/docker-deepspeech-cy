@@ -4,6 +4,7 @@ import os
 import glob
 import argparse
 import pandas as pd
+import unicodedata
 from tqdm import tqdm
 from collections import Counter
 from text_preprocessor import TextPreProcessor
@@ -40,5 +41,14 @@ print (char_counter)
 alpha_diff = text_preprocessor.get_alphabet() - alphabet
 if len(alpha_diff) > 0:
     print ("WARNING! Characters in alphabet, but not in datasets")
-    print (alpha_diff)
+    for c in alpha_diff:
+        print ('%04x' % ord(c))
 
+alpha_diff2 = alphabet - text_preprocessor.get_alphabet()
+if len(alpha_diff2) > 0:
+    print ("ERROR! datasets contains characters not in alphabet")
+    for c in alpha_diff2:
+        print (c, '%04x' % ord(c), unicodedata.name(c))
+    print ("Alphabet: ")
+    for a in text_preprocessor.get_alphabet():
+        print (a, '%04x' % ord(a), unicodedata.name(a))
