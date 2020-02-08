@@ -6,6 +6,7 @@ fi
 
 checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save_data_path("deepspeech/s4c"))')
 
+rm -rf $checkpoint_dir
 rm -rf /export/s4c
 
 python -u DeepSpeech.py \
@@ -16,7 +17,7 @@ python -u DeepSpeech.py \
 	--lm_trie_path /data/corpws_s4c/trie \
 	--train_batch_size 24 \
 	--test_batch_size 24 \
-	--epochs 20 \
+	--epochs 10 \
 	--checkpoint_dir "$checkpoint_dir" \
 	--export_dir /export/s4c \
 	"$@"

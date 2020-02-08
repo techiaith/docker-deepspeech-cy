@@ -6,24 +6,19 @@ fi
 
 checkpoint_dir=$(python -c 'from xdg import BaseDirectory as xdg; print(xdg.save_data_path("deepspeech/s4c"))')
 
-rm -rf /export/s4c
+rm -rf $checkpoint_dir
 
 python -u DeepSpeech.py \
-	--train_files /data/commonvoice-cy/deepspeech.csv \
+	--train_files /data/commonvoice-cy-v4-20191210/deepspeech.validated.csv \
 	--alphabet_config_path bin/bangor_welsh/alphabet.txt \
 	--dev_files /data/corpws_s4c/train_1.csv \
 	--test_files /data/corpws_s4c/test_1.csv \
 	--lm_binary_path /data/corpws_s4c/lm.binary \
 	--lm_trie_path /data/corpws_s4c/trie \
-	--validation_step 10 \
 	--train_batch_size 24 \
 	--dev_batch_size 48 \
 	--test_batch_size 24 \
-	--learning_rate 0.0001 \
-	--epoch 1000 \
-	--display_step 5 \
-	--dropout_rate 0.20 \
-	--default_stddev 0.046875 \
+	--epochs 20 \
 	--checkpoint_dir "$checkpoint_dir" \
 	--export_dir /export/s4c \
 	"$@"
