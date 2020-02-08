@@ -14,15 +14,9 @@ python -u DeepSpeech.py \
 	--test_files /data/corpws_s4c/test_1.csv \
 	--lm_binary_path /data/corpws_s4c/lm.binary \
 	--lm_trie_path /data/corpws_s4c/trie \
-	--validation_step 10 \
 	--train_batch_size 24 \
-	--dev_batch_size 48 \
 	--test_batch_size 24 \
-	--learning_rate 0.0001 \
-	--epoch 1000 \
-	--display_step 5 \
-	--dropout_rate 0.20 \
-	--default_stddev 0.046875 \
+	--epochs 20 \
 	--checkpoint_dir "$checkpoint_dir" \
 	--export_dir /export/s4c \
 	"$@"

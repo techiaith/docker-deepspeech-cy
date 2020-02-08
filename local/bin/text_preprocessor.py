@@ -73,12 +73,16 @@ class TextPreProcessor(object):
         new_transcript = self.tokenizer.remove_seperators(new_transcript).strip()
         new_transcript = new_transcript.lower()
 
+        if len(new_transcript) == 0:
+            return False, "Empty transcript", new_transcript
+
         ooa = ''.join(self.tokenizer.out_of_alphabet(new_transcript)).strip()
         if len(ooa)>0:
             #print ('U+%04X' % (ord(ooa),))
             return False, "Out of Alphabet (%s)" % ooa, new_transcript
         else:
             return True, "", new_transcript
+
 
 
     def remove_tags(self, transcript):

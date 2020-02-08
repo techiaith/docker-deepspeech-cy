@@ -108,8 +108,8 @@ def process_corpus_files(current_dir, current_files, alphabet_file_path, csv_fil
                 csv_file_out.writerow({
                     'wav_filename':wavfile_path,
                     'wav_filesize':os.path.getsize(wavfile_path),
-                    'wav_date':os.path.getmtime(wavfile_path),
                     'transcript': transcript,
+                    'wav_date':os.path.getmtime(wavfile_path),
                     'wav_fileid':hashed_wavfile_path,
                     'speakerid':text_preprocessor.get_speaker_id(tagged_transcript),
                     'duration': get_duration_wav(wavfile_path),
@@ -123,7 +123,7 @@ def main(corpus_root_dir, csv_file_path, alphabet_file_path, text_file_path, **a
 
     corpus_files = get_directory_structure(corpus_root_dir)
 
-    csv_fieldnames = ['wav_filename', 'wav_filesize', 'wav_date', 'transcript', 'wav_fileid', 'speakerid', 'duration', 'accent', 'gender', 'age', 'valid']
+    csv_fieldnames = ['wav_filename', 'wav_filesize', 'transcript', 'wav_date', 'wav_fileid', 'speakerid', 'duration', 'accent', 'gender', 'age', 'valid']
     csv_file_out = csv.DictWriter(open(csv_file_path, 'w', encoding='utf-8'), fieldnames=csv_fieldnames)
     csv_file_out.writeheader()
 
