@@ -7,7 +7,6 @@ DEEPSPEECH_BRANCH := v$(DEEPSPEECH_RELEASE)
 run: 
 	docker run --gpus all --name techiaith-deepspeech-${DEEPSPEECH_BRANCH}-${USER} -it \
 		-v ${PWD}/data/:/data \
-                -v $(PWD)/../Corpws-S4C/data/corpws/:/data/corpws_s4c/clips/ \
                 -v ${PWD}/checkpoints/:/checkpoints \
 		-v ${PWD}/export/:/export \
 		-v ${PWD}/homedir/:/root \
