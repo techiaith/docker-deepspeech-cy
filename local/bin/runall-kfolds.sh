@@ -1,0 +1,10 @@
+./bin/bangor_welsh/run-cv-macsen-kfold.sh 1
+./bin/bangor_welsh/run-cv-macsen-kfold.sh 2
+./bin/bangor_welsh/run-cv-macsen-kfold.sh 3
+./bin/bangor_welsh/run-cv-macsen-kfold.sh 4
+./bin/bangor_welsh/run-cv-macsen-kfold.sh 5
+./bin/bangor_welsh/run-cv-macsen-kfold.sh 6
+./bin/bangor_welsh/run-cv-macsen-kfold.sh 7
+./bin/bangor_welsh/run-cv-macsen-kfold.sh 8
+./bin/bangor_welsh/run-cv-macsen-kfold.sh 9
+./bin/bangor_welsh/run-cv-macsen-kfold.sh 10 
