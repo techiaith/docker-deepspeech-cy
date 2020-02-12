@@ -1,0 +1,10 @@
+./bin/bangor_welsh/run-cv-moz-validated.sh 1
+./bin/bangor_welsh/run-cv-moz-validated.sh 2
+./bin/bangor_welsh/run-cv-moz-validated.sh 3
+./bin/bangor_welsh/run-cv-moz-validated.sh 4
+./bin/bangor_welsh/run-cv-moz-validated.sh 5
+./bin/bangor_welsh/run-cv-moz-validated.sh 6
+./bin/bangor_welsh/run-cv-moz-validated.sh 7
+./bin/bangor_welsh/run-cv-moz-validated.sh 8
+./bin/bangor_welsh/run-cv-moz-validated.sh 9
+./bin/bangor_welsh/run-cv-moz-validated.sh 10
