@@ -37,12 +37,14 @@ for index, row in tqdm(concatenated_df.iterrows(), total=concatenated_df.shape[0
         alphabet = alphabet.union(set(transcript))
 
 print (char_counter)
-  
+
+
 alpha_diff = text_preprocessor.get_alphabet() - alphabet
 if len(alpha_diff) > 0:
     print ("WARNING! Characters in alphabet, but not in datasets")
     for c in alpha_diff:
-        print ('%04x' % ord(c))
+        print (c, '%04x' % ord(c), unicodedata.name(c))
+
 
 alpha_diff2 = alphabet - text_preprocessor.get_alphabet()
 if len(alpha_diff2) > 0:
