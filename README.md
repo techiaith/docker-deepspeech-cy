@@ -21,6 +21,7 @@ Gweler/*See also* : https://github.com/NVIDIA/nvidia-docker#quickstart
 $ git clone https://github.com/techiaith/docker-deepspeech-cy
 $ cd docker-deepspeech-cy
 $ make
+$ make run
 ```
 
 
@@ -45,25 +46,19 @@ drwxr-xr-x 2 techiaith techiaith    6459392 Feb  3 18:35 clips
 
 ## Hyfforddi / *Training*
 
-### Hyfforddi gyda Common Voice / *Training with Mozilla CommonVoice*
+Y prif sgriptiau a ddefnyddir ar gyfer hyfforddi yw: 
+
+*The sgripts primarity for training are:*
 
 ```
-$ make run
-root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/import_cv_cy.py
-root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/run-macsen.py
+root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/run-tl-cv-macsen.sh
+root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/run-tl-cv-arddweud.sh
 ```
 
+Gweler y nodyn rhyddhau am wybodaeth am unrhyw ddata pellach y gallai fod eu hangen arnoch
 
-### Hyfforddi gyda Paldaruo / *Training with Paldaruo*
+*Please see the release note for information on any further data you might require*
 
-Mae'r camau hyn yn llwytho'r corpws i lawr o techiaith.cymru sydd 12G mewn maint
 
-*These steps will download the speech corpus from techiaith.cymru which is 12Gb in size*
-
-```
-$ make run
-root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/import_paldaruo.py
-root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/run_paldaruo.py
-```
 
 
