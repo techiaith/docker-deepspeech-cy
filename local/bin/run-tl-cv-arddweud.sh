@@ -15,21 +15,19 @@ train_files=/data/commonvoice-cy-v4-20191210/deepspeech.validated.csv,/data/comm
 
 test_files=/data/paldaruo/deepspeech.csv
 
-lm_binary_path=/data/texts/oscar_commonvoice/lm.binary
-lm_trie_path=/data/texts/oscar_commonvoice/trie
+lm_scorer_path=/data/texts/oscar_commonvoice/kenlm.scorer
 
 rm -rf $checkpoint_dir
 rm -rf $export_dir
 rm -rf $summary_dir
 
-python3 /DeepSpeech/bin/bangor_welsh/check_alphabets.py -csv "$train_files,$test_files" -a "$alphabet_file"
+#python3 /DeepSpeech/bin/bangor_welsh/check_alphabets.py -csv "$train_files,$test_files" -a "$alphabet_file"
 
 python -u /DeepSpeech/DeepSpeech.py \
 	--train_files  "$train_files" \
 	--test_files "$test_files" \
 	--alphabet_config_path "$alphabet_file" \
-	--lm_binary_path "$lm_binary_path" \
-	--lm_trie_path "$lm_trie_path" \
+	--scorer_path "$lm_scorer_path"
 	--epochs 10 \
 	--drop_source_layers 2 \
 	--nofine_tune \
@@ -41,7 +39,7 @@ python -u /DeepSpeech/DeepSpeech.py \
 	--export_dir "$export_dir" \
 	"$@"
 
-cp $alphabet_file $export_dir
-cp $lm_binary_path $export_dir
-cp $lm_trie_path $export_dir
+#cp $alphabet_file $export_dir
+#cp $lm_binary_path $export_dir
+#cp $lm_trie_path $export_dir
 
