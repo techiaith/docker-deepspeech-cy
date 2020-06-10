@@ -28,6 +28,9 @@ python -u /DeepSpeech/DeepSpeech.py \
 	--test_files "$test_files" \
 	--alphabet_config_path "$alphabet_file" \
 	--scorer_path "$lm_scorer_path"	\
+	--epochs 10 \
+	--train_batch_size 64 \
+	--test_batch_size 12 \
 	--drop_source_layers 1 \	
 	--use_allow_growth true \
 	--load_checkpoint_dir /checkpoints/mozilla/deepspeech-en-checkpoint \
