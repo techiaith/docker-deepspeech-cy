@@ -22,7 +22,8 @@ build:
 	    mkdir -p checkpoints/mozilla; \
 	    cd checkpoints/mozilla && \
 		wget https://github.com/mozilla/DeepSpeech/releases/download/v$(DEEPSPEECH_RELEASE)/deepspeech-$(DEEPSPEECH_RELEASE)-checkpoint.tar.gz && \
-		tar xvfz deepspeech-$(DEEPSPEECH_RELEASE)-checkpoint.tar.gz;\
+		tar xvfz deepspeech-$(DEEPSPEECH_RELEASE)-checkpoint.tar.gz && \
+		mv deepspeech-$(DEEPSPEECH_RELEASE)-checkpoint deepspeech-en-checkpoint;\
 	fi
 	docker build --build-arg BRANCH=${DEEPSPEECH_BRANCH} --rm -t techiaith/deepspeech:${DEEPSPEECH_BRANCH} .
 

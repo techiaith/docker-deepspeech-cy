@@ -27,16 +27,14 @@ python -u /DeepSpeech/DeepSpeech.py \
 	--train_files  "$train_files" \
 	--test_files "$test_files" \
 	--alphabet_config_path "$alphabet_file" \
-	--scorer_path "$lm_scorer_path"
-	--epochs 10 \
-	--drop_source_layers 2 \
-	--nofine_tune \
-	--source_model_checkpoint_dir /checkpoints/mozilla/deepspeech-0.5.1-checkpoint \
-	--train_batch_size 48 \
-	--test_batch_size 12 \
-	--checkpoint_dir "$checkpoint_dir" \
+	--scorer_path "$lm_scorer_path"	\
+	--drop_source_layers 1 \	
+	--use_allow_growth true \
+	--load_checkpoint_dir /checkpoints/mozilla/deepspeech-en-checkpoint \
+	--save_checkpoint_dir /checkpoints/mozilla/deepspeech-en-checkpoint \
 	--summary_dir "$summary_dir" \
 	--export_dir "$export_dir" \
+	--checkpoint_dir "$checkpoint_dir" \
 	"$@"
 
 #cp $alphabet_file $export_dir
