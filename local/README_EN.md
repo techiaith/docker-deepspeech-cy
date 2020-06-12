@@ -12,7 +12,7 @@ Welsh data from the Mozilla CommonVoice website: https://voice.mozilla.org/cy/da
 ### `import_audio_archive.py`
 
 ```shell
-root@c67722092f2e:/DeepSpeech# bin/bangor_welsh/import_audio_archive.py --archive cy-v4.tar.gz --target_dir /data/commonvoice-cy-v4-20191210/
+root@c67722092f2e:/DeepSpeech# bin/bangor_welsh/import_audio_archive.py --archive /data/cy-v4.tar.gz --target_dir /data/commonvoice-cy-v4-20191210/
 ```
 
 ### `analyze_audio.py`
