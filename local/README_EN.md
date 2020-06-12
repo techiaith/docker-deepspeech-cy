@@ -42,13 +42,13 @@ root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh
 
 `clean_lm_corpus.py`
 
-`build_lm_scorer.sh`
+### `build_lm_scorer.sh`
 
 ```shell
 root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/build_lm_scorer.sh -s /data/texts/macsen/corpus.clean.txt -o /data/texts/macsen/
 ```
 
-`evaluate_lm_scorer.sh`
+### `evaluate_lm_scorer.sh`
 
 ```shell
 root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/evaluate_lm_scorer.sh -l /data/texts/macsen -t /data/macsen/deepspeech.csv
