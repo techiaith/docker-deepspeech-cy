@@ -36,4 +36,4 @@ Llwythwch y data diweddaraf i lawr o https://voice.mozilla.org/cy/datasets i'r f
 
 Gweler [README.md](local/README.md)
 
-*See [README.md](local/README_EN.md)
+*See [README.md](local/README_EN.md)*
