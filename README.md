@@ -15,55 +15,25 @@ Gweler/*See also* : https://github.com/NVIDIA/nvidia-docker#quickstart
  
 <br/>
  
-## Cychwyn arni / *Quickstart*
+## Gosod / *Installation*
 
 ```
 $ git clone https://github.com/techiaith/docker-deepspeech-cy
 $ cd docker-deepspeech-cy
 $ make
+$ make run
 ```
 
 
 ### Data Cymraeg Mozilla CommonVoice / *Mozilla Common Welsh Data*
 
-Llwythwch y data diweddaraf i lawr o https://voice.mozilla.org/cy/datasets ac yna echdynnwch popeth i ffolder newydd o dan `data`. Er enghraifft.....
+Llwythwch y data diweddaraf i lawr o https://voice.mozilla.org/cy/datasets i'r ffolder `data`.
 
-*Download the latest data from https://voice.mozilla.org/cy/datasets and extract all into a new folder underneath `data`. For example.....*
+*Download the latest data from https://voice.mozilla.org/cy/datasets to the `data`folder.
 
-
-```bash
-techiaith@gweinydd:/home/techiaith/docker/docker-deepspeech-cy/data/commonvoice-cy-v4-20191210⟫ ls -l
-total 2124544
-drwxr-xr-x 2 techiaith techiaith    6459392 Feb  3 18:35 clips
--rw-r--r-- 1 techiaith techiaith     148342 Dec 10 13:42 dev.tsv
--rw-r--r-- 1 techiaith techiaith     580477 Dec 10 13:42 invalidated.tsv
--rw-r--r-- 1 techiaith techiaith    2568371 Dec 10 13:42 other.tsv
--rw-r--r-- 1 techiaith techiaith     147797 Dec 10 13:42 test.tsv
--rw-r--r-- 1 techiaith techiaith     164667 Dec 10 13:42 train.tsv
--rw-r--r-- 1 techiaith techiaith   10434562 Dec 10 13:42 validated.tsv
-```
 
 ## Hyfforddi / *Training*
 
-### Hyfforddi gyda Common Voice / *Training with Mozilla CommonVoice*
+Gweler [README.md](local/README.md)
 
-```
-$ make run
-root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/import_cv_cy.py
-root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/run-macsen.py
-```
-
-
-### Hyfforddi gyda Paldaruo / *Training with Paldaruo*
-
-Mae'r camau hyn yn llwytho'r corpws i lawr o techiaith.cymru sydd 12G mewn maint
-
-*These steps will download the speech corpus from techiaith.cymru which is 12Gb in size*
-
-```
-$ make run
-root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/import_paldaruo.py
-root@3deb765f2438:/DeepSpeech# ./bin/bangor_welsh/run_paldaruo.py
-```
-
-
+*See [README.md](local/README_EN.md)
