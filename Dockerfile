@@ -8,7 +8,7 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.d
 						libxslt1-dev libjpeg8-dev zlib1g-dev dos2unix\
 	&& apt-get clean \
 	&& git lfs install \
-    && pip3 install sox wget sklearn pandas python_speech_features virtualenv requests jiwer tqdm \
+    && pip3 install sox wget sklearn pandas python_speech_features virtualenv requests jiwer tqdm columnize \
 	&& rm -rf /var/lib/apt/lists/* 
 
 ENV LC_ALL cy_GB.UTF-8

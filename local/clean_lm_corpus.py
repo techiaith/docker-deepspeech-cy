@@ -43,7 +43,6 @@ def replace(transcript):
     transcript = transcript.replace("\u2014","")
     transcript = transcript.replace("\u201C","")
     transcript = transcript.replace("\u201D","")
-
     
     return transcript
 
@@ -80,4 +79,3 @@ if __name__ == "__main__":
     parser.set_defaults(func=main)
     args = parser.parse_args()
     args.func(**vars(args))
-    
