@@ -29,7 +29,7 @@ $ make run
 
 Llwythwch y data diweddaraf i lawr o https://voice.mozilla.org/cy/datasets i'r ffolder `data`.
 
-*Download the latest data from https://voice.mozilla.org/cy/datasets to the `data`folder.
+*Download the latest data from https://voice.mozilla.org/cy/datasets to the `data`folder.*
 
 
 ## Hyfforddi / *Training*
