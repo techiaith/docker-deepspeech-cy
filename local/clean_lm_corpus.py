@@ -80,3 +80,4 @@ if __name__ == "__main__":
     parser.set_defaults(func=main)
     args = parser.parse_args()
     args.func(**vars(args))
+    

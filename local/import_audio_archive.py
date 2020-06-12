@@ -21,9 +21,8 @@ def extract(source_tar_gz, target_dir):
     tar.close()
 
 
-def main(cv_archive_file_path, **args):
+def main(cv_archive_file_path, cv_root_dir, **args):
 
-    cv_root_dir = pathlib.Path(cv_archive_file_path).parent
     extract(cv_archive_file_path, cv_root_dir)
     
     cmd = "python3 /DeepSpeech/bin/import_cv2.py %s" % (cv_root_dir)
@@ -36,7 +35,8 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter) 
 
-    parser.add_argument("--archive", dest="cv_archive_file_path", required=True, help="path to downloaded CommonVoice tar.gz file")
+    parser.add_argument("--archive", dest="cv_archive_file_path", required=True, help="path to downloaded tar.gz containing speech corpus in CommonVoice v2.0 format")
+    parser.add_argument("--target_dir", dest="cv_root_dir", required=True, help="target directory for extracted archive, also root directory for training data")
    
     parser.set_defaults(func=main)
     args = parser.parse_args()

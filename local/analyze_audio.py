@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter) 
 
-    parser.add_argument("--csv_dir", dest="csv_root_dir", required=True, help="path to corpus CSV files")
+    parser.add_argument("--csv_dir", dest="csv_root_dir", required=True, help="path to audio corpus CSV files")
    
     parser.set_defaults(func=main)
     args = parser.parse_args()
