@@ -1,6 +1,7 @@
 DeepSpeech
 CorporaCreator
 *.csv
+.vscode/*
 data/*
 export/*
 homedir/*
