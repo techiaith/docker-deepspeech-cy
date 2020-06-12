@@ -6,7 +6,7 @@ DEEPSPEECH_BRANCH := v$(DEEPSPEECH_RELEASE)
 run: 
 	docker run --gpus all --name techiaith-deepspeech-${DEEPSPEECH_BRANCH}-${USER} -it \
 		-v ${PWD}/data/:/data \
-        -v ${PWD}/checkpoints/:/checkpoints \
+		-v ${PWD}/checkpoints/:/checkpoints \
 		-v ${PWD}/export/:/export \
 		-v ${PWD}/homedir/:/root \
 		-v ${PWD}/local/:/DeepSpeech/bin/bangor_welsh \
@@ -37,7 +37,7 @@ clean:
 	sudo rm -rf homedir
 	sudo rm -rf checkpoints
 
-	
+
 stop:
 	-docker stop techiaith-deepspeech-${DEEPSPEECH_BRANCH}-${USER}
 	-docker rm techiaith-deepspeech-${DEEPSPEECH_BRANCH}-${USER}
