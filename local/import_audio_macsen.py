@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 import utils.kfold as kfold
 import utils.audio as audio
-
+from utils.clean_transcript import clean_transcript
 
 from argparse import ArgumentParser, RawTextHelpFormatter
 
@@ -24,8 +24,6 @@ Mae angen rhoid lleoliad i ffeil alphabet.txt
 © Prifysgol Bangor University
 
 """
-
-alphabet = set()
 
 MACSEN_DATASET_URL ="http://techiaith.cymru/deepspeech/macsen/datasets/macsen_200121.tar.gz"
 
@@ -60,7 +58,7 @@ def get_directory_structure(rootdir):
     return dir
 
 
-def main(target_data_root_dir, **args):
+def main(target_data_root_dir, alphabet_file_path, **args):
 
     #wget_macsen_dataset(target_data_root_dir)
     csv_file_path = os.path.join(target_data_root_dir, "deepspeech.csv")
@@ -71,7 +69,8 @@ def main(target_data_root_dir, **args):
     moz_fieldnames = ['wav_filename', 'wav_filesize', 'transcript']
     csv_file_out = csv.DictWriter(open(csv_file_path, 'w', encoding='utf-8'), fieldnames=moz_fieldnames)
     csv_file_out.writeheader()
-    
+
+    clean = clean_transcript(alphabet_file_path, os.path.join(target_data_root_dir, 'ooa.txt'))
     clips_root = macsen_files[macsen_files_root]['clips']
     for user in clips_root:
         for wavfile in clips_root[user]:
@@ -79,14 +78,17 @@ def main(target_data_root_dir, **args):
                 wavfilepath = os.path.join(target_data_root_dir, 'clips', user, wavfile)
                 txtfilepath = wavfilepath.replace(".wav",".txt")
                 with open(txtfilepath, "r", encoding='utf-8') as txtfile:
-                    transcript = txtfile.read()                                     
-                    if audio.downsample_wavfile(wavfilepath):
-                        print (wavfilepath)
-                        csv_file_out.writerow({
-                            'wav_filename':wavfilepath, 
-                            'wav_filesize':os.path.getsize(wavfilepath), 
-                            'transcript':transcript
-                        }) 
+                    transcript = txtfile.read()
+                    cleaned, transcript = clean.clean(transcript)
+                    if cleaned:
+                        transcript = transcript.lower()
+                        if audio.downsample_wavfile(wavfilepath):                        
+                            print (wavfilepath)
+                            csv_file_out.writerow({
+                                'wav_filename':wavfilepath, 
+                                'wav_filesize':os.path.getsize(wavfilepath), 
+                                'transcript':transcript
+                            }) 
     
     kfold.create_kfolds(csv_file_path, target_data_root_dir, 10)
     
@@ -100,7 +102,8 @@ def main(target_data_root_dir, **args):
 if __name__ == "__main__":
     
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter)
-    parser.add_argument("-t", dest="target_data_root_dir", required=True, default="/data/macsen")    
+    parser.add_argument("-t", dest="target_data_root_dir", required=True, default="/data/macsen")
+    parser.add_argument("-a", dest="alphabet_file_path", default="/DeepSpeech/bin/bangor_welsh/alphabet.txt")
     parser.set_defaults(func=main)
     args = parser.parse_args()
     args.func(**vars(args))

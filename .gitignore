@@ -10,4 +10,4 @@ checkpoints/*
 tmp/*
 local/bin/commonvoice_url.py
 keep
-local/bin/__pycache__
+local/utils/__pycache__
