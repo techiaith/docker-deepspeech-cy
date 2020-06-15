@@ -38,14 +38,24 @@ root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/analyze_audio.py --c
 root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh
 ```
 
-## Language Models
+## Language Models / Domain Specific
 
-`clean_lm_corpus.py`
+### Fetching Macsen resources
+
+```shell
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_audio_macsen.py -t /data/macsen
+```
+
+### `clean_lm_corpus.py`
+
+```shell
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/clean_lm_corpus.sh -s /data/texts/macsen/corpus.txt -o /data/texts/macsen/corpus.clean.txt 
+```
 
 ### `build_lm_scorer.sh`
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/build_lm_scorer.sh -s /data/texts/macsen/corpus.clean.txt -o /data/texts/macsen/
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/build_lm_scorer.sh -s /data/texts/macsen/corpus.clean.txt -o /data/texts/macsen/ -t /data/macsen/deepspeech.csv
 ```
 
 ### `evaluate_lm_scorer.sh`
