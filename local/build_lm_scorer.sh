@@ -5,6 +5,7 @@ set -o pipefail
 
 source_text_file=''
 output_dir=''
+test_files=''
 
 alphabet_file_path=/DeepSpeech/bin/bangor_welsh/alphabet.txt
 checkpoints_dir=/checkpoints/cy
@@ -39,9 +40,12 @@ if [ -z "$output_dir" ]; then
    	exit 2
 fi
 
+
 cd ${output_dir}
 
-
+echo "####################################################################################"
+echo "#### Generating binary language model                                           ####"
+echo "####################################################################################"
 python /DeepSpeech/data/lm/generate_lm.py \
 	--input_txt "${source_text_file}" \
   --output_dir . \
@@ -56,26 +60,38 @@ python /DeepSpeech/data/lm/generate_lm.py \
 	--discount_fallback
 
 
+echo "####################################################################################"
+echo "#### Generating first language model package                                    ####"
+echo "####################################################################################"
 python3 /DeepSpeech/data/lm/generate_package.py \
 	--alphabet "${alphabet_file_path}" \
 	--lm lm.binary \
 	--vocab vocab-50000.txt \
   --package kenlm.scorer \
-  --default_alpha 0.931289039105002 \
-	--default_beta 1.1834137581510284
+  --default_alpha 0.75 \
+	--default_beta 1.85
 
 
+echo "####################################################################################"
+echo "#### Determine optimal alpha and beta parameters                                ####"
+echo "####################################################################################"
 python /DeepSpeech/lm_optimizer.py \
   --test_files ${test_files} \
   --checkpoint_dir ${checkpoints_dir} \
-  --alphabet_config_path ${alphabet_file_path}
+  --alphabet_config_path ${alphabet_file_path} \
   --scorer kenlm.scorer
 
 
+echo "####################################################################################"
+echo "#### Input required....                                                         ####"
+echo "####################################################################################"
 read -p "Enter best default alpha: " alpha
 read -p "Enter best default beta: " beta
 
 
+echo "####################################################################################"
+echo "#### Generating package with optimal alpha and beta                             ####"
+echo "####################################################################################"
 python3 /DeepSpeech/data/lm/generate_package.py \
 	--alphabet "${alphabet_file_path}" \
 	--lm lm.binary \
