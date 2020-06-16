@@ -2,9 +2,14 @@
 
 *Click [here](README_EN.md) to read this page in English*
 
+Mae dogfennaeth gan Mozilla ar DeepSpeech ar gael fan hyn: https://deepspeech.readthedocs.io . 
+
+Mae'r sgriptiau canlynol yn enghreifftio ac yn hwyluso defnyddio'r camau cyffredinol a ddisgrifir yn nogfennaeth DeepSpeech Mozilla er mwyn creu modelau adnabod lleferydd Cymraeg ar gyfer rhaglenni cynorthwyydd digidol (e.e. Macsen) a trawsgrifiwr.  
+
+
 ## Rhagofynion
 
-Data Cymraeg gan o wefan CommonVoice: https://voice.mozilla.org/cy/datasets
+Llwythwch i lawr data lleferydd Cymraeg o wefan CommonVoice: https://voice.mozilla.org/cy/datasets sy'n cael ei ddarparu fel un ffeil mawr wedi'i gwasgu (e.e. `cy.tar.gz`) . Cadwch y ffeil o fewn y ffolder `data`. 
 
 
 ## Paratoi Data
@@ -28,6 +33,7 @@ root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/analyze_audio.py --c
 ```
 
 ## Model Acwstig
+
 
 ### `run_tl_cv_cy.sh`
 

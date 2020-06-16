@@ -2,9 +2,14 @@
 
 *Cliciwch [yma](README.md) i ddarllen y dudalen hon yn Gymraeg*
 
+Documentation by Mozilla on DeepSpeech can be found here: https://deepspeech.readthedocs.io 
+
+The following scripts demonstrate how the general steps described in Mozilla's documentation can be used to create Welsh language speech recognition models for both a voice assistant (e.g. Macsen) and a transcribing applications. 
+
+
 ## Prerequisites
 
-Welsh data from the Mozilla CommonVoice website: https://voice.mozilla.org/cy/datasets
+Download the Welsh speech data from the Mozilla CommonVoice website: https://voice.mozilla.org/cy/datasets which is provided as a single large compressed file (`.tar.gz`). Save the file into the `data` ffolder. 
 
 
 ## Prepare Data
