@@ -17,5 +17,7 @@ ENV LANGUAGE cy_GB.UTF-8
 
 WORKDIR /DeepSpeech
 
+RUN python3 util/taskcluster.py --source tensorflow --artifact convert_graphdef_memmapped_format --branch r1.15 --target .
+
 ENV PATH /DeepSpeech/native_client:/DeepSpeech/native_client/kenlm/build/bin:$PATH
 

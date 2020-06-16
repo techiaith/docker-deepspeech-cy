@@ -75,3 +75,8 @@ python -u DeepSpeech.py \
 	--export_min_ds_version "${deepspeech_version}" \
 	--export_max_ds_version "${deepspeech_version}" \
 	--export_description "${model_description}"
+
+ /DeepSpeech/convert_graphdef_memmapped_format \
+ 	--in_graph=${export_dir}/output_graph.pb \
+	--out_graph=${export_dir}/output_graph.pbmm
+	
