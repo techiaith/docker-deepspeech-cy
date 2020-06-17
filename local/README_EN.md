@@ -45,10 +45,12 @@ root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh
 
 ## Language Models / Domain Specific
 
-### Fetching Macsen resources
+### Fetching Bangor resources
+
+You can fetch further recordings to use as test sets for evaluating Welsh DeepSpeech in the context of a voice assistant ('macsen') or transcribing ('transcribe')
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_audio_macsen.py -t /data/macsen
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_audio_bangor.py -t /data/macsen -d macsen
 ```
 
 ### `clean_lm_corpus.py`

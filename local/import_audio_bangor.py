@@ -31,6 +31,7 @@ ALPHABET_FILE_PATH = "/DeepSpeech/bin/bangor_welsh/alphabet.txt"
 MACSEN_DATASET_URL ="http://techiaith.cymru/deepspeech/macsen/datasets/macsen_200121.tar.gz"
 TRANSCRIBE_DATASET_URL = "http://techiaith.cymru/deepspeech/arddweud/datasets/arddweud_testset_200617.tar.gz"
 
+
 class DataSet(Enum):
     MACSEN = 'macsen'
     TRANSCRIBE = 'transcribe'
