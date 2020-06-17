@@ -9,6 +9,8 @@ import columnize
 from enum import Enum
 
 import tarfile
+import gzip
+import shutil
 import functools
 from urllib.parse import urlparse
 
@@ -40,27 +42,45 @@ class DataSet(Enum):
         return self.value
 
 
+
+def wget_oscar_textcorpus(data_root_dir):
+    
+    corpus_url="https://oscar-public.huma-num.fr/compressed-orig/cy.txt.gz"    
+    dest_file = os.path.join(data_root_dir, 'cy.txt.gz')
+
+    print ("Downloading: %s to %s" % (corpus_url, dest_file))
+    
+    wget.download(corpus_url, dest_file)
+
+    file_url_path = urlparse(corpus_url)
+    file_filename = os.path.basename(file_url_path.path)
+    with gzip.open(os.path.join(data_root_dir, file_filename)) as oscar_gzfile:
+            print ("\nExtracting.....")
+            with open(os.path.join(data_root_dir, 'cy.txt'), 'wb') as oscar_gzfile_out:
+                shutil.copyfileobj(oscar_gzfile, oscar_gzfile_out)
+
+
 def wget_dataset(dataset_name, data_root_dir):
-
-    dataset_url = MACSEN_DATASET_URL
-    print (dataset_name)
-    if str(dataset_name)=="transcribe":
-        dataset_url = TRANSCRIBE_DATASET_URL
-
-    print ("Downloading: %s" % dataset_url)
 
     if not os.path.exists(data_root_dir):
         os.makedirs(data_root_dir)
-        wget.download(dataset_url, data_root_dir)
+    
+    dataset_url = MACSEN_DATASET_URL
+    
+    if str(dataset_name)=="transcribe":
+        wget_oscar_textcorpus(data_root_dir)
+        dataset_url = TRANSCRIBE_DATASET_URL
+        
+    print ("Downloading: %s" % dataset_url)
+    wget.download(dataset_url, data_root_dir)
 
-        tarfile_url_path = urlparse(dataset_url)
-        tarfile_filename = os.path.basename(tarfile_url_path.path)
-      
-        with tarfile.open(os.path.join(data_root_dir, tarfile_filename), "r:gz") as bangor_tarfile:
-            print ("\nExtracting.....")
-            bangor_tarfile.extractall(data_root_dir)
+    tarfile_url_path = urlparse(dataset_url)
+    tarfile_filename = os.path.basename(tarfile_url_path.path)      
+    with tarfile.open(os.path.join(data_root_dir, tarfile_filename), "r:gz") as bangor_tarfile:
+        print ("\nExtracting.....")
+        bangor_tarfile.extractall(data_root_dir)
 
-        os.remove(os.path.join(data_root_dir, tarfile_filename))
+    os.remove(os.path.join(data_root_dir, tarfile_filename))
 
 
 
@@ -122,7 +142,7 @@ if __name__ == "__main__":
     
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter)
     parser.add_argument("-d", dest="dataset_name", type=DataSet, choices=list(DataSet), required=True, help="enw'r set ddata techiaith i'w lwytho i lawr / name of techiaith dataset to download. 'macsen' neu/or 'transcribe'")    
-    parser.add_argument("-t", dest="target_data_root_dir", default="/data/techiaith_dataset")    
+    parser.add_argument("-t", dest="target_data_root_dir", default="/data/bangor")    
     parser.set_defaults(func=main)
     args = parser.parse_args()
     args.func(**vars(args))

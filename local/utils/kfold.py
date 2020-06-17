@@ -13,9 +13,14 @@ from sklearn.model_selection import train_test_split
 import argparse
 
 def create_kfolds(csvfile, dest_dir, k):
-
+    print (csvfile)
     kf = KFold(n_splits=k, shuffle=True, random_state=2)
-    speech_corpus_df = pd.read_csv(csvfile, encoding='utf-8')
+
+    try:
+        speech_corpus_df = pd.read_csv(csvfile, encoding='utf-8', delimiter=',')
+    except pd.errors.EmptyDataError:
+        print ("Failed to split %s into kfolds" % csvfile)
+        return
 
     fold_num = 0
     for train_indexes, test_indexes in kf.split(speech_corpus_df):
