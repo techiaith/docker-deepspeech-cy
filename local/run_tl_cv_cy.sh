@@ -49,7 +49,6 @@ python -u DeepSpeech.py \
 	--epochs 10 \
 	--alphabet_config_path "${alphabet_cy_file}" \
 	--save_checkpoint_dir "${checkpoint_cy_dir}" \
-	--checkpoint_dir "${checkpoint_cy_dir}" \
 	--load_checkpoint_dir "${checkpoint_en_dir}"
 
 
@@ -79,4 +78,3 @@ python -u DeepSpeech.py \
  /DeepSpeech/convert_graphdef_memmapped_format \
  	--in_graph=${export_dir}/output_graph.pb \
 	--out_graph=${export_dir}/output_graph.pbmm
-	

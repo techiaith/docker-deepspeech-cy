@@ -6,6 +6,8 @@ import csv
 import wget
 import columnize
 
+from enum import Enum
+
 import tarfile
 import functools
 from urllib.parse import urlparse
@@ -25,21 +27,37 @@ Mae angen rhoid lleoliad i ffeil alphabet.txt
 
 """
 
+ALPHABET_FILE_PATH = "/DeepSpeech/bin/bangor_welsh/alphabet.txt"
 MACSEN_DATASET_URL ="http://techiaith.cymru/deepspeech/macsen/datasets/macsen_200121.tar.gz"
+TRANSCRIBE_DATASET_URL = "http://techiaith.cymru/deepspeech/arddweud/datasets/arddweud_testset_200617.tar.gz"
+
+class DataSet(Enum):
+    MACSEN = 'macsen'
+    TRANSCRIBE = 'transcribe'
+
+    def __str__(self):
+        return self.value
 
 
-def wget_macsen_dataset(data_root_dir):
+def wget_dataset(dataset_name, data_root_dir):
+
+    dataset_url = MACSEN_DATASET_URL
+    print (dataset_name)
+    if str(dataset_name)=="transcribe":
+        dataset_url = TRANSCRIBE_DATASET_URL
+
+    print ("Downloading: %s" % dataset_url)
 
     if not os.path.exists(data_root_dir):
         os.makedirs(data_root_dir)
-        wget.download(MACSEN_DATASET_URL, data_root_dir)
+        wget.download(dataset_url, data_root_dir)
 
-        tarfile_url_path = urlparse(MACSEN_DATASET_URL)
+        tarfile_url_path = urlparse(dataset_url)
         tarfile_filename = os.path.basename(tarfile_url_path.path)
       
-        with tarfile.open(os.path.join(data_root_dir, tarfile_filename), "r:gz") as macsen_tarfile:
+        with tarfile.open(os.path.join(data_root_dir, tarfile_filename), "r:gz") as bangor_tarfile:
             print ("\nExtracting.....")
-            macsen_tarfile.extractall(data_root_dir)
+            bangor_tarfile.extractall(data_root_dir)
 
         os.remove(os.path.join(data_root_dir, tarfile_filename))
 
@@ -58,20 +76,20 @@ def get_directory_structure(rootdir):
     return dir
 
 
-def main(target_data_root_dir, alphabet_file_path, **args):
+def main(dataset_name, target_data_root_dir,**args):
 
-    #wget_macsen_dataset(target_data_root_dir)
+    wget_dataset(dataset_name, target_data_root_dir)
     csv_file_path = os.path.join(target_data_root_dir, "deepspeech.csv")
 
-    macsen_files = get_directory_structure(target_data_root_dir)
-    macsen_files_root = list(macsen_files)[0]
+    bangor_files = get_directory_structure(target_data_root_dir)
+    bangor_files_root = list(bangor_files)[0]
 
     moz_fieldnames = ['wav_filename', 'wav_filesize', 'transcript']
     csv_file_out = csv.DictWriter(open(csv_file_path, 'w', encoding='utf-8'), fieldnames=moz_fieldnames)
     csv_file_out.writeheader()
 
-    clean = clean_transcript(alphabet_file_path, os.path.join(target_data_root_dir, 'ooa.txt'))
-    clips_root = macsen_files[macsen_files_root]['clips']
+    clean = clean_transcript(ALPHABET_FILE_PATH, os.path.join(target_data_root_dir, 'ooa.txt'))
+    clips_root = bangor_files[bangor_files_root]['clips']
     for user in clips_root:
         for wavfile in clips_root[user]:
             if wavfile.endswith(".wav"):
@@ -83,7 +101,7 @@ def main(target_data_root_dir, alphabet_file_path, **args):
                     if cleaned:
                         transcript = transcript.lower()
                         if audio.downsample_wavfile(wavfilepath):                        
-                            print (wavfilepath)
+                            #print (wavfilepath)
                             csv_file_out.writerow({
                                 'wav_filename':wavfilepath, 
                                 'wav_filesize':os.path.getsize(wavfilepath), 
@@ -92,18 +110,18 @@ def main(target_data_root_dir, alphabet_file_path, **args):
     
     kfold.create_kfolds(csv_file_path, target_data_root_dir, 10)
     
-    print ("Import Macsen data to %s finished." % (target_data_root_dir))
+    print ("Import Bangor data to %s finished." % (target_data_root_dir))
     print ("%s contents: " % (target_data_root_dir))
-    macsen_dir = sorted(os.listdir(target_data_root_dir))      
-    print (columnize.columnize(macsen_dir, displaywidth=80))
+    bangor_dir = sorted(os.listdir(target_data_root_dir))      
+    print (columnize.columnize(bangor_dir, displaywidth=80))
 
 
 
 if __name__ == "__main__":
     
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter)
-    parser.add_argument("-t", dest="target_data_root_dir", required=True, default="/data/macsen")
-    parser.add_argument("-a", dest="alphabet_file_path", default="/DeepSpeech/bin/bangor_welsh/alphabet.txt")
+    parser.add_argument("-d", dest="dataset_name", type=DataSet, choices=list(DataSet), required=True, help="enw'r set ddata techiaith i'w lwytho i lawr / name of techiaith dataset to download. 'macsen' neu/or 'transcribe'")    
+    parser.add_argument("-t", dest="target_data_root_dir", default="/data/techiaith_dataset")    
     parser.set_defaults(func=main)
     args = parser.parse_args()
     args.func(**vars(args))

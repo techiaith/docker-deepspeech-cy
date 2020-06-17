@@ -7,6 +7,7 @@ run:
 	docker run --gpus all --name techiaith-deepspeech-${DEEPSPEECH_BRANCH}-${USER} -it \
 		-v ${PWD}/data/:/data \
 		-v ${PWD}/checkpoints/:/checkpoints \
+		-v ${PWD}/models/:/models \
 		-v ${PWD}/export/:/export \
 		-v ${PWD}/homedir/:/root \
 		-v ${PWD}/local/:/DeepSpeech/bin/bangor_welsh \
@@ -25,7 +26,12 @@ build:
 		tar xvfz deepspeech-$(DEEPSPEECH_RELEASE)-checkpoint.tar.gz && \
 		mv deepspeech-$(DEEPSPEECH_RELEASE)-checkpoint deepspeech-en-checkpoint;\
 	fi
-		
+	if [ ! -d "models/mozilla" ]; then \
+	    mkdir -p models/mozilla; \
+	    cd models/mozilla && \
+		wget https://github.com/mozilla/DeepSpeech/releases/download/v$(DEEPSPEECH_RELEASE)/deepspeech-$(DEEPSPEECH_RELEASE)-models.pbmm && \
+		wget https://github.com/mozilla/DeepSpeech/releases/download/v$(DEEPSPEECH_RELEASE)/deepspeech-$(DEEPSPEECH_RELEASE)-models.scorer;\
+	fi		
 	docker build --build-arg BRANCH=${DEEPSPEECH_BRANCH} --rm -t techiaith/deepspeech:${DEEPSPEECH_BRANCH} .
 
 
