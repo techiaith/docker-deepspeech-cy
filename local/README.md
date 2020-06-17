@@ -46,10 +46,13 @@ root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh
 
 ## Modelau Iaith / Parth Penodol
 
-### Estyn adnoddau Macsen
+### Estyn adnoddau o Fangor
+
+Mae modd estyn set o recordiadau bellach i'w defnyddio fel set profi ar gyfer werthuso DeepSpeech Cymraeg o fewn gyd-destun defnydd cynorthwyydd digidol ('macsen') neu arddweud ('transcribe')
+
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_audio_macsen.py -t /data/macsen
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_audio_bangor.py -t /data/bangor -d macsen
 ```
 
 ### `clean_lm_corpus.py`
