@@ -43,12 +43,12 @@ root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh -c /
 
 ## Language Models / Domain Specific
 
-### Fetching Bangor resources
+### `import_bangor_resources.py`
 
-You can fetch further recordings to use as test sets for evaluating Welsh DeepSpeech in the context of a voice assistant ('macsen') or transcribing ('transcribe')
+You will need further resources from Bangor University in order to train  DeepSpeech for various Welsh language applications. The below script will download further recordings and/or text corpora that facilitate Welsh speech recognition for a simple voice assistant ('macsen') or a transcriber ('transcribe').
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_audio_bangor.py -t /data/macsen -d macsen
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_bangor_resources.py -t /data/macsen -d macsen
 ```
 
 ### `clean_lm_corpus.py`

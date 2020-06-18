@@ -44,29 +44,28 @@ root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh -c /
 
 ## Modelau Iaith / Parth Penodol
 
-### Estyn adnoddau o Fangor
+### `import_bangor_resources.py`
 
-Mae modd estyn set o recordiadau bellach i'w defnyddio fel set profi ar gyfer werthuso DeepSpeech Cymraeg o fewn gyd-destun defnydd cynorthwyydd digidol ('macsen') neu arddweud ('transcribe')
-
+Mae angen rhagor o adnoddau gan Brifysgol Bangor er mwyn hyfforddi DeepSpeech ar gyfer adnabod lleferydd Cymraeg mewn gwahanol gyd-destunau defnyddiol. Mae'r sgript isod yn llwytho i lawr rhagor o recordiadau ac/neu chorpora testun sydd yn galluogi adnabod lleferydd Cymraeg o fewn cynorthwyydd digidol ('macsen') neu drawsgrifiwr ('transcribe').
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_audio_bangor.py -t /data/bangor -d macsen
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_bangor_resources.py -t /data/macsen -d macsen
 ```
 
 ### `clean_lm_corpus.py`
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/clean_lm_corpus.sh -s /data/texts/macsen/corpus.txt -o /data/texts/macsen/corpus.clean.txt 
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/clean_lm_corpus.sh -s /data/macsen/corpus.txt -o /data/macsen/corpus.clean.txt 
 ```
 
 ### `build_lm_scorer.sh`
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/build_lm_scorer.sh -s /data/texts/macsen/corpus.clean.txt -o /data/texts/macsen/ -t /data/macsen/deepspeech.csv
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/build_lm_scorer.sh -s /data/macsen/corpus.clean.txt -o /data/macsen/ -t /data/macsen/deepspeech.csv
 ```
 
 ### `evaluate_lm_scorer.sh`
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/evaluate_lm_scorer.sh -l /data/texts/mascen -t /data/macsen/deepspeech.csv
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/evaluate_lm_scorer.sh -l /data/mascen -t /data/macsen/deepspeech.csv
 ```
