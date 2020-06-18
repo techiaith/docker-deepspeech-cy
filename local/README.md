@@ -4,7 +4,7 @@
 
 Mae dogfennaeth gan Mozilla ar DeepSpeech ar gael fan hyn: https://deepspeech.readthedocs.io . 
 
-Mae'r sgriptiau canlynol yn enghreifftio ac yn hwyluso defnyddio'r camau cyffredinol a ddisgrifir yn nogfennaeth DeepSpeech Mozilla er mwyn creu modelau adnabod lleferydd Cymraeg ar gyfer rhaglenni cynorthwyydd digidol (e.e. Macsen) a trawsgrifiwr.  
+Mae'r sgriptiau canlynol yn enghreifftio ac yn hwyluso defnyddio'r camau cyffredinol a ddisgrifir yn nogfennaeth DeepSpeech Mozilla er mwyn creu modelau adnabod lleferydd Cymraeg ar gyfer rhaglenni cynorthwyydd digidol (e.e. Macsen) a thrawsgrifiwr.  
 
 
 ## Rhagofynion
@@ -46,7 +46,7 @@ root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh -c /
 
 ### `import_bangor_resources.py`
 
-Mae angen rhagor o adnoddau gan Brifysgol Bangor er mwyn hyfforddi DeepSpeech ar gyfer adnabod lleferydd Cymraeg mewn gwahanol gyd-destunau defnyddiol. Mae'r sgript isod yn llwytho i lawr rhagor o recordiadau ac/neu chorpora testun sydd yn galluogi adnabod lleferydd Cymraeg o fewn cynorthwyydd digidol ('macsen') neu drawsgrifiwr ('transcribe').
+Mae angen rhagor o adnoddau gan Brifysgol Bangor er mwyn hyfforddi DeepSpeech ar gyfer adnabod lleferydd Cymraeg mewn gwahanol gyd-destunau defnyddiol. Mae'r sgript isod yn llwytho i lawr rhagor o recordiadau a/neu corpora testun sydd yn galluogi adnabod lleferydd Cymraeg o fewn cynorthwyydd digidol ('macsen') neu drawsgrifiwr ('transcribe').
 
 ```shell
 root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_bangor_resources.py -t /data/macsen -d macsen
