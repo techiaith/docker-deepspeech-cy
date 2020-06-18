@@ -1,5 +1,5 @@
 #!/bin/bash
-set -xe
+set -e
 
 ###
 model_name='bangor'
@@ -13,9 +13,25 @@ model_contact_info='techiaith@bangor.ac.uk'
 model_version='20.06'
 deepspeech_version='0.7.3'
 
+###
+while getopts ":c" opt; do
+  case $opt in
+    a) 
+		csv_dir=$OPTARG
+		;;	      
+    \?) echo "Invalid option -$OPTARG" >&2
+    ;;
+  esac
+done
+shift "$(($OPTIND -1))"
+
+if [ -z "${csv_dir}" ]; then
+	echo "-l csv_dir not set"
+    exit 2
+fi
 
 ###
-train_files=/data/commonvoice-cy-v4-20191210/deepspeech.validated.csv,/data/commonvoice-cy-v4-20191210/deepspeech.other.csv
+train_files=${audio_train_dir}/validated.csv
 alphabet_cy_file=/DeepSpeech/bin/bangor_welsh/alphabet.txt
 
 checkpoint_dir=/checkpoints
@@ -38,7 +54,6 @@ cp -rv /checkpoints/mozilla/deepspeech-en-checkpoint/ $checkpoint_en_dir
 
 
 ###
-set +x
 echo "####################################################################################"
 echo "#### Transfer to WELSH model with --save_checkpoint_dir --load_checkpoint_dir   ####"
 echo "####################################################################################"
@@ -75,6 +90,7 @@ python -u DeepSpeech.py \
 	--export_max_ds_version "${deepspeech_version}" \
 	--export_description "${model_description}"
 
- /DeepSpeech/convert_graphdef_memmapped_format \
- 	--in_graph=${export_dir}/output_graph.pb \
+###
+/DeepSpeech/convert_graphdef_memmapped_format \
+	--in_graph=${export_dir}/output_graph.pb \
 	--out_graph=${export_dir}/output_graph.pbmm

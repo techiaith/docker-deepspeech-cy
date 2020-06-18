@@ -37,10 +37,8 @@ root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/analyze_audio.py --c
 
 ### `run_tl_cv_cy.sh`
 
-* [ ] - tynnu allan paths 'hardcoded'
-
 ```shell
-root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh
+root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh -c /data/commonvoice-cy-v4-20191210/clips
 ```
 
 ## Language Models / Domain Specific
