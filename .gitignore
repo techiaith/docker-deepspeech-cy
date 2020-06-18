@@ -1,6 +1,8 @@
+*.pyc
 DeepSpeech
 CorporaCreator
 *.csv
+.vscode/*
 data/*
 export/*
 homedir/*
@@ -9,4 +11,5 @@ checkpoints/*
 tmp/*
 local/bin/commonvoice_url.py
 keep
-local/bin/__pycache__
+local/__pycache__
+local/utils/__pycache__
