@@ -54,7 +54,7 @@ root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_bangor_resources.py -t /d
 ### `clean_lm_corpus.py`
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/clean_lm_corpus.sh -s /data/texts/macsen/corpus.txt -o /data/texts/macsen/corpus.clean.txt 
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/clean_lm_corpus.py -s /data/texts/macsen/corpus.txt -o /data/texts/macsen/corpus.clean.txt 
 ```
 
 ### `build_lm_scorer.sh`

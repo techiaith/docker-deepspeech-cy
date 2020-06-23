@@ -5,16 +5,18 @@ set -e
 model_name='bangor'
 model_language='cy-Latn-GB'
 model_license='CC-BY-4.0'
-model_description='Welsh language acoustic model trained using transfer learning and approximately 77hrs of Welsh speech data from the Mozilla CommonVoice December 2019 release.'
+model_description='Welsh language acoustic model trained using transfer learning and approximately 77hrs of validated and other Welsh speech data from the Mozilla CommonVoice December 2019 release.'
 
 model_author='techiaith'
 model_contact_info='techiaith@bangor.ac.uk'
 
 model_version='20.06'
-deepspeech_version='0.7.3'
+deepspeech_version='0.7.4'
+
 
 ###
-while getopts ":c" opt; do
+csv_dir=''
+while getopts ":a:" opt; do
   case $opt in
     a) 
 		csv_dir=$OPTARG
@@ -23,15 +25,16 @@ while getopts ":c" opt; do
     ;;
   esac
 done
+
 shift "$(($OPTIND -1))"
 
 if [ -z "${csv_dir}" ]; then
-	echo "-l csv_dir not set"
+    echo "-a csv_dir not set"
     exit 2
 fi
 
 ###
-train_files=${audio_train_dir}/validated.csv
+train_files=${csv_dir}/validated.clean.csv,${csv_dir}/other.clean.csv
 alphabet_cy_file=/DeepSpeech/bin/bangor_welsh/alphabet.txt
 
 checkpoint_dir=/checkpoints

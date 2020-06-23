@@ -4,15 +4,20 @@ import os
 import sys
 import pathlib
 import tarfile
-
+import pandas
+import csv
 import shlex
 import subprocess
 
+from utils.clean_transcript import clean_transcript
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 DESCRIPTION = """
 
 """
+
+ALPHABET_FILE_PATH = "/DeepSpeech/bin/bangor_welsh/alphabet.txt"
+
 
 def extract(source_tar_gz, target_dir):
     print ("Extracting: %s" % source_tar_gz)
@@ -30,7 +35,31 @@ def main(cv_archive_file_path, cv_root_dir, **args):
     import_process = subprocess.Popen(shlex.split(cmd))
     import_process.wait()
 
-   
+    #
+    csv_files = pathlib.Path(os.path.join(cv_root_dir,'clips')).glob("*.csv")
+    clean = clean_transcript(ALPHABET_FILE_PATH)
+
+    for csv_file_path in csv_files:
+        print ("Clean and Check %s transcripts against alphabet" % csv_file_path)
+        df = pandas.read_csv(csv_file_path, encoding='utf-8')
+        
+        moz_fieldnames = ['wav_filename', 'wav_filesize', 'transcript']
+        csv_file_out = csv.DictWriter(open(str(csv_file_path).replace(".csv",".clean.csv"), 'w', encoding='utf-8'), fieldnames=moz_fieldnames)
+        csv_file_out.writeheader()
+
+        for index, row in df.iterrows():
+            transcript=row["transcript"]
+            cleaned, transcript = clean.clean(transcript)
+            if cleaned:
+                csv_file_out.writerow({
+                    'wav_filename':row["wav_filename"], 
+                    'wav_filesize':row["wav_filesize"], 
+                    'transcript':transcript.lower()
+                }) 
+            else:                
+                print ("Dropped %s\n" % transcript)            
+
+
 if __name__ == "__main__": 
 
     parser = ArgumentParser(description=DESCRIPTION, formatter_class=RawTextHelpFormatter) 

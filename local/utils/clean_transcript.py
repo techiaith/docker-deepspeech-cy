@@ -20,12 +20,15 @@ class clean_transcript(object):
     def clean(self, transcript):
         transcript = self.replace(transcript)
         transcript = self.remove_seperators(transcript)
-        if len(self.ooa_file_path) > 0:            
-            ooa = self.out_of_alphabet(transcript)
-            if (len(ooa) > 0):
+        
+        ooa = self.out_of_alphabet(transcript)
+        if (len(ooa) > 0):
+            print (ooa, transcript)
+            if len(self.ooa_file_path) > 0:
                 with open(self.ooa_text_file_path, 'w+', encoding='utf-8') as ooa_out_file:
-                    ooa_out_file.write("%s\t%s\t%s\n" % (i, ooa, transcript))
-                    return False, transcript
+                    ooa_out_file.write("%s\t%s\n" % (ooa, transcript))
+            return False, transcript
+            
         return True, transcript
 
 

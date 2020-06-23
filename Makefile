@@ -1,5 +1,5 @@
 default: build
-DEEPSPEECH_RELEASE := 0.7.3
+DEEPSPEECH_RELEASE := 0.7.4
 DEEPSPEECH_BRANCH := v$(DEEPSPEECH_RELEASE)
 
 
@@ -17,7 +17,7 @@ run:
 build:
 	if [ ! -d "DeepSpeech" ]; then \
 	    git clone --branch $(DEEPSPEECH_BRANCH) https://github.com/mozilla/DeepSpeech.git; \
-	    cd DeepSpeech && docker build --rm -t mozilla/deepspeech:${DEEPSPEECH_BRANCH} .; \
+	    cd DeepSpeech && make Dockerfile.train DEEPSPEECH_SHA=tags/${DEEPSPEECH_BRANCH} && docker build --rm -t mozilla/deepspeech:${DEEPSPEECH_BRANCH} -f Dockerfile.train .; \
 	fi	
 	if [ ! -d "checkpoints/mozilla" ]; then \
 	    mkdir -p checkpoints/mozilla; \
