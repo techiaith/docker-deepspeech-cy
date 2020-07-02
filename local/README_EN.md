@@ -43,7 +43,7 @@ Use the following script to train an acoustic model. The `-a` argument needs to 
 root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh -a /data/commonvoice-cy-v4-20191210/clips
 ```
 
-The script uses DeepSpeech's transfer learning feature in order to derive some benefit from using Mozilla's English language models, trained on much larger data collections, as a starting point for Welsh speech recognition.
+This script uses DeepSpeech's transfer learning feature in order to derive some benefit from using Mozilla's English language models, trained on much larger data collections, as a starting point for training Welsh speech recognition.
 
 
 
@@ -56,7 +56,7 @@ An acoustic model on its own, despite having used transfer learning techniques, 
 
 You will need further resources from Bangor University in order to train  DeepSpeech with language models for various Welsh language applications. 
 
-The following script will download further recordings and/or text corpora that facilitate Welsh speech recognition for a simple voice assistant ('macsen') or a transcriber ('transcribe') (as requested in the `-d` argument)
+The following script will download further recordings and/or text corpora that facilitate Welsh speech recognition for a simple voice assistant ('macsen') or a transcriber ('transcribe') (as requested in the `-d` argument).
 
 ```shell
 root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_bangor_resources.py -t /data/macsen -d macsen

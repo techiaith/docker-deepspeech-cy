@@ -6,6 +6,9 @@ import csv
 import wget
 import columnize
 
+import requests
+import json
+
 from enum import Enum
 
 import tarfile
@@ -43,9 +46,9 @@ class DataSet(Enum):
 
 
 
-def wget_oscar_textcorpus(data_root_dir):
+def get_oscar_textcorpus(data_root_dir):
     
-    corpus_url="https://oscar-public.huma-num.fr/compressed-orig/cy.txt.gz"    
+    corpus_url="https://oscar-public.huma-num.fr/shuffled/cy.txt.gz"    
     dest_file = os.path.join(data_root_dir, 'cy.txt.gz')
 
     print ("Downloading: %s to %s" % (corpus_url, dest_file))
@@ -55,9 +58,18 @@ def wget_oscar_textcorpus(data_root_dir):
     file_url_path = urlparse(corpus_url)
     file_filename = os.path.basename(file_url_path.path)
     with gzip.open(os.path.join(data_root_dir, file_filename)) as oscar_gzfile:
-            print ("\nExtracting.....")
-            with open(os.path.join(data_root_dir, 'cy.txt'), 'wb') as oscar_gzfile_out:
-                shutil.copyfileobj(oscar_gzfile, oscar_gzfile_out)
+        print ("\nExtracting.....")
+        with open(os.path.join(data_root_dir, 'corpus.txt'), 'wb') as oscar_gzfile_out:
+            shutil.copyfileobj(oscar_gzfile, oscar_gzfile_out)
+
+
+
+def get_macsen_textcorpus(data_root_dir):
+    json_data = json.loads(requests.get("https://api.techiaith.org/assistant/get_all_sentences").text)
+    with open(os.path.join(data_root_dir, "corpus.txt"), 'w', encoding='utf-8') as macsen_file_out: 
+        for s in json_data["result"]:
+            macsen_file_out.write(s[0] + "\n")
+
 
 
 def wget_dataset(dataset_name, data_root_dir):
@@ -66,9 +78,7 @@ def wget_dataset(dataset_name, data_root_dir):
         os.makedirs(data_root_dir)
     
     dataset_url = MACSEN_DATASET_URL
-    
     if str(dataset_name)=="transcribe":
-        wget_oscar_textcorpus(data_root_dir)
         dataset_url = TRANSCRIBE_DATASET_URL
         
     print ("Downloading: %s" % dataset_url)
@@ -81,6 +91,14 @@ def wget_dataset(dataset_name, data_root_dir):
         bangor_tarfile.extractall(data_root_dir)
 
     os.remove(os.path.join(data_root_dir, tarfile_filename))
+
+
+
+def get_textcorpora(dataset_name, data_root_dir):
+    if str(dataset_name)=="transcribe":
+        get_oscar_textcorpus(data_root_dir)
+    else:
+        get_macsen_textcorpus(data_root_dir)
 
 
 
@@ -100,6 +118,8 @@ def get_directory_structure(rootdir):
 def main(dataset_name, target_data_root_dir,**args):
 
     wget_dataset(dataset_name, target_data_root_dir)
+    get_textcorpora(dataset_name, target_data_root_dir)
+
     csv_file_path = os.path.join(target_data_root_dir, "deepspeech.csv")
 
     bangor_files = get_directory_structure(target_data_root_dir)
