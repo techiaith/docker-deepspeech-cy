@@ -7,7 +7,9 @@ import tarfile
 import pandas
 import csv
 import shlex
+import shutil
 import subprocess
+import glob
 
 from utils.clean_transcript import clean_transcript
 from argparse import ArgumentParser, RawTextHelpFormatter
@@ -24,6 +26,16 @@ def extract(source_tar_gz, target_dir):
     tar = tarfile.open(source_tar_gz, "r:gz")
     tar.extractall(target_dir)
     tar.close()
+    
+    # files may exist in levels of subdirectories. Need to move them
+    # up to the target_dir
+    extracted_clips_path = glob.glob(os.path.join(target_dir,"**","clips"), recursive=True)
+    if len(extracted_clips_path) > 0:
+        extracted_clips_parent_path = str(pathlib.Path(extracted_clips_path[0]).parent)
+        for file_path in glob.glob(extracted_clips_parent_path + "/*"):
+            print ("Moving from %s to %s " % (file_path, target_dir)) 
+            shutil.move(file_path, target_dir)
+
 
 
 def main(cv_archive_file_path, cv_root_dir, **args):
