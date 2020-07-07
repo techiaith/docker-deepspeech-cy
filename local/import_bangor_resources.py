@@ -19,6 +19,9 @@ from urllib.parse import urlparse
 
 import utils.kfold as kfold
 import utils.audio as audio
+
+from tqdm import tqdm
+
 from utils.clean_transcript import clean_transcript
 
 from argparse import ArgumentParser, RawTextHelpFormatter
@@ -44,6 +47,25 @@ class DataSet(Enum):
     def __str__(self):
         return self.value
 
+
+def get_textcorpora(dataset_name, data_root_dir):
+    if str(dataset_name)=="transcribe":
+        get_oscar_textcorpus(data_root_dir)
+    else:
+        get_macsen_textcorpus(data_root_dir)
+    
+    # text file for both is corpus.txt in the data_root_dir
+    source_text_file_path = os.path.join(data_root_dir, "corpus.txt")
+    output_text_file_path = os.path.join(data_root_dir, "corpus.clean.txt")
+    ooa_text_file_path = source_text_file_path.replace(".txt", ".ooa.txt")
+    clean = clean_transcript(ALPHABET_FILE_PATH, ooa_text_file_path)
+    
+    with open(output_text_file_path, 'w', encoding='utf-8') as out_file:
+        with open(source_text_file_path, 'r', encoding='utf-8') as in_file:
+            for i, transcript in enumerate(tqdm(in_file)):
+                cleaned, transcript = clean.clean(transcript)
+                if cleaned:
+                    out_file.write(transcript.lower() + "\n")
 
 
 def get_oscar_textcorpus(data_root_dir):
@@ -72,6 +94,7 @@ def get_macsen_textcorpus(data_root_dir):
 
 
 
+
 def wget_dataset(dataset_name, data_root_dir):
 
     if not os.path.exists(data_root_dir):
@@ -94,11 +117,7 @@ def wget_dataset(dataset_name, data_root_dir):
 
 
 
-def get_textcorpora(dataset_name, data_root_dir):
-    if str(dataset_name)=="transcribe":
-        get_oscar_textcorpus(data_root_dir)
-    else:
-        get_macsen_textcorpus(data_root_dir)
+
 
 
 
@@ -129,7 +148,10 @@ def main(dataset_name, target_data_root_dir,**args):
     csv_file_out = csv.DictWriter(open(csv_file_path, 'w', encoding='utf-8'), fieldnames=moz_fieldnames)
     csv_file_out.writeheader()
 
-    clean = clean_transcript(ALPHABET_FILE_PATH, os.path.join(target_data_root_dir, 'ooa.txt'))
+    # clean also texts from dataset transcripts. 
+    ooa_text_file_path = os.path.join(target_data_root_dir, 'deepspeech.ooa.txt')
+    clean = clean_transcript(ALPHABET_FILE_PATH, ooa_text_file_path)
+
     clips_root = bangor_files[bangor_files_root]['clips']
     for user in clips_root:
         for wavfile in clips_root[user]:

@@ -23,9 +23,9 @@ class clean_transcript(object):
         
         ooa = self.out_of_alphabet(transcript)
         if (len(ooa) > 0):
-            print (ooa, transcript)
+            #print (ooa, transcript)
             if len(self.ooa_file_path) > 0:
-                with open(self.ooa_text_file_path, 'w+', encoding='utf-8') as ooa_out_file:
+                with open(self.ooa_file_path, 'w+', encoding='utf-8') as ooa_out_file:
                     ooa_out_file.write("%s\t%s\n" % (ooa, transcript))
             return False, transcript
             

@@ -5,12 +5,12 @@ set -e
 model_name='bangor'
 model_language='cy-Latn-GB'
 model_license='CC-BY-4.0'
-model_description='Welsh language acoustic model trained using transfer learning and approximately 77hrs of validated and other Welsh speech data from the Mozilla CommonVoice December 2019 release.'
+model_description='Welsh language acoustic model trained using transfer learning and approximately 90hrs of validated and other Welsh speech data from the Mozilla CommonVoice June 2020 release.'
 
 model_author='techiaith'
 model_contact_info='techiaith@bangor.ac.uk'
 
-model_version='20.06'
+model_version='20.07'
 deepspeech_version='0.7.4'
 
 
@@ -38,7 +38,7 @@ train_files=${csv_dir}/validated.clean.csv,${csv_dir}/other.clean.csv
 alphabet_cy_file=/DeepSpeech/bin/bangor_welsh/alphabet.txt
 
 checkpoint_dir=/checkpoints
-export_dir=/export/cv-tl-cy
+export_dir=/export/${deepspeech_version}_${model_version}
 
 
 ### Force UTF-8 output
@@ -49,12 +49,13 @@ checkpoint_cy_dir="${checkpoint_dir}/cy"
 
 rm -rf ${checkpoint_en_dir}
 rm -rf ${checkpoint_cy_dir}
+rm -rf ${export_dir}
 
 mkdir -p ${checkpoint_en_dir}
 mkdir -p ${checkpoint_cy_dir}
+mkdir -p ${export_dir}
 
-cp -rv /checkpoints/mozilla/deepspeech-en-checkpoint/ $checkpoint_en_dir
-
+cp -r /checkpoints/mozilla/deepspeech-en-checkpoint/ $checkpoint_en_dir
 
 ###
 echo "####################################################################################"
@@ -97,3 +98,10 @@ python -u DeepSpeech.py \
 /DeepSpeech/convert_graphdef_memmapped_format \
 	--in_graph=${export_dir}/output_graph.pb \
 	--out_graph=${export_dir}/output_graph.pbmm
+
+
+set +x
+echo "####################################################################################"
+echo "#### Exported acoustic models (.pb/.pbmm files) can be found in ${export_dir} "
+echo "####################################################################################"
+set -x
