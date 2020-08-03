@@ -59,20 +59,26 @@ python /DeepSpeech/data/lm/generate_lm.py \
   --binary_a_bits 255 \
   --binary_q_bits 8 \
   --binary_type 'trie' \
-	--discount_fallback
+  --discount_fallback
 
 
 set +x
 echo "####################################################################################"
-echo "#### Generating first language model package                                    ####"
+echo "#### Generating package for un-optimized language model package                 ####"
+echo "####                                                                            ####"
+echo "#### Default alpha and beta values used. Previous optimal values were:          ####"
+echo "####                                                                            ####"
+echo "#### Voice Assistant lm     : alpha: 1.7242448485503816                         ####"
+echo "#### 			    beta: 4.9065413926676165                          ####"
+echo "####                                                                            ####"
 echo "####################################################################################"
 set -x
 python3 /DeepSpeech/data/lm/generate_package.py \
 	--alphabet "${alphabet_file_path}" \
 	--lm lm.binary \
 	--vocab vocab-50000.txt \
-  --package kenlm.scorer \
-  --default_alpha 0.75 \
+  	--package kenlm.scorer \
+ 	--default_alpha 0.75 \
 	--default_beta 1.85
 
 
