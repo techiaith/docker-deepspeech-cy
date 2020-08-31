@@ -18,11 +18,13 @@ def main(csv_root_dir, **args):
     for csv_file_path in csv_files:        
         df = pandas.read_csv(csv_file_path, encoding='utf-8')        
         total_duration = 0.0
-        for index, row in df.iterrows(): 
+        count = 0
+        for index, row in df.iterrows():
+            count += 1
             wav_file_path = os.path.join(csv_root_dir, row["wav_filename"])
             total_duration = total_duration + librosa.get_duration(filename=wav_file_path)
 
-        print ("%s\t\t%.2f hours\t(%.2f seconds)" % (csv_file_path, total_duration/60.0/60.0, total_duration))
+        print ("%s\t%s recordings\t\t%.2f hours\t(%.2f seconds)" % (csv_file_path, count, total_duration/60.0/60.0, total_duration))
     
    
 if __name__ == "__main__": 
