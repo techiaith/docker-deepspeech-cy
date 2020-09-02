@@ -37,11 +37,11 @@ def convert_mp3(mp3file):
         return False
 
 
-
 def transform_audio(old_file, new_file):
     tf = Transformer()
     tf.convert(samplerate=16000, n_channels=1)
     tf.build(old_file, new_file)
+
 
 def get_duration_wav(wavfile):
     f = wave.open(wavfile, 'r')

@@ -68,16 +68,17 @@ echo "#### Generating package for un-optimized language model package           
 echo "####                                                                            ####"
 echo "#### Default alpha and beta values used. Previous optimal values were:          ####"
 echo "####                                                                            ####"
-echo "#### Voice Assistant lm     : alpha: 1.7242448485503816                         ####"
-echo "#### 			    beta: 4.9065413926676165                          ####"
+echo "#### Voice Assistant Language Model                                             ####"
+echo "####    alpha: 1.7242448485503816                                               ####"
+echo "####    beta:  4.9065413926676165                                               ####"
 echo "####                                                                            ####"
 echo "####################################################################################"
 set -x
-python3 /DeepSpeech/data/lm/generate_package.py \
+/DeepSpeech/native_client/generate_scorer_package \
 	--alphabet "${alphabet_file_path}" \
 	--lm lm.binary \
 	--vocab vocab-50000.txt \
-  	--package kenlm.scorer \
+	--package kenlm.scorer \
  	--default_alpha 0.75 \
 	--default_beta 1.85
 
@@ -89,9 +90,9 @@ echo "##########################################################################
 set -x
 python -u /DeepSpeech/evaluate.py \
 	--test_files "${test_files}" --test_batch_size 1 \
-    --alphabet_config_path "${alphabet_file_path}" \
-    --load_checkpoint_dir "${checkpoint_cy_dir}" \
-    --scorer_path kenlm.scorer
+	--alphabet_config_path "${alphabet_file_path}" \
+	--load_checkpoint_dir "${checkpoint_cy_dir}" \
+	--scorer_path kenlm.scorer
 
 
 cd -

@@ -8,7 +8,7 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.d
 						libxslt1-dev libjpeg8-dev zlib1g-dev dos2unix \
 	&& apt-get clean \
 	&& git lfs install \
-	&& pip install sox wget sklearn pandas python_speech_features virtualenv requests tqdm columnize \
+	&& pip install sox wget sklearn pandas python_speech_features virtualenv requests tqdm columnize praatio \
 	&& rm -rf /var/lib/apt/lists/* 
 
 ENV LC_ALL cy_GB.UTF-8
@@ -28,10 +28,10 @@ RUN rm -rf kenlm && \
 	cmake .. && \
 	make -j $(nproc)
 
-# Done
-WORKDIR /DeepSpeech
-
-RUN python util/taskcluster.py --source tensorflow --artifact convert_graphdef_memmapped_format --branch r1.15 --target .
+RUN python ../util/taskcluster.py --target .
+RUN python ../util/taskcluster.py --source tensorflow --artifact convert_graphdef_memmapped_format --branch r1.15 --target .
 
 ENV PATH /DeepSpeech/native_client:/DeepSpeech/native_client/kenlm/build/bin:$PATH
 
+# Done
+WORKDIR /DeepSpeech
