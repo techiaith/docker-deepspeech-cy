@@ -72,6 +72,10 @@ echo "#### Voice Assistant Language Model                                       
 echo "####    alpha: 1.7242448485503816                                               ####"
 echo "####    beta:  4.9065413926676165                                               ####"
 echo "####                                                                            ####"
+echo "#### Transcription Language Model                                               ####"
+echo "####    alpha: 1.1417685444561605                                               ####"
+echo "####    beta:  0.5798010479098541                                               ####"
+echo "####                                                                            ####"
 echo "####################################################################################"
 set -x
 /DeepSpeech/native_client/generate_scorer_package \
@@ -93,6 +97,5 @@ python -u /DeepSpeech/evaluate.py \
 	--alphabet_config_path "${alphabet_file_path}" \
 	--load_checkpoint_dir "${checkpoint_cy_dir}" \
 	--scorer_path kenlm.scorer
-
 
 cd -
