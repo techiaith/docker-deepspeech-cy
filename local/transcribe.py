@@ -26,7 +26,9 @@ LANGUAGE_MODEL = "/models/techiaith/techiaith_bangor_transcribe_%s.scorer" % TEC
 
 
 def convert_json_to_textgrid(wav_file_path, transcript_file_path):
+    
     textgrid_file_path = transcript_file_path.replace(".tlog",".TextGrid")    
+
     with open(transcript_file_path) as json_file:        
         textgrid_entries_list = []
         json_data = json.load(json_file)
@@ -39,7 +41,7 @@ def convert_json_to_textgrid(wav_file_path, transcript_file_path):
         utterance_tier = tgio.IntervalTier('utterance', textgrid_entries_list, 0, pairedWav=wav_file_path)
         tg = tgio.Textgrid()
         tg.addTier(utterance_tier)
-        tg.save(textgrid_file_path)
+        tg.save(textgrid_file_path, useShortForm=False, outputFormat='textgrid')
 
         print ("Textgrid of transcription saved to %s" % textgrid_file_path)
 
@@ -49,9 +51,10 @@ def main(wav_file_path, **args):
     cmd = "python3 /DeepSpeech/transcribe.py --src %s --checkpoint_dir %s --alphabet_config_path %s --scorer %s --force"
     cmd = cmd % (wav_file_path, CHECKPOINTS_DIR, ALPHABET_FILE_PATH, LANGUAGE_MODEL)
 
-    #downsample_wavfile(wav_file_path)
-    #import_process = subprocess.Popen(shlex.split(cmd))
-    #import_process.wait()
+    downsample_wavfile(wav_file_path)
+    
+    import_process = subprocess.Popen(shlex.split(cmd))
+    import_process.wait()
 
     transcript_file = wav_file_path.replace(".wav", ".tlog")
 
