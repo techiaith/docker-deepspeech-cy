@@ -106,7 +106,7 @@ python -u DeepSpeech.py \
 	--export_description "${model_description}"
 
 ###
-/DeepSpeech/convert_graphdef_memmapped_format \
+/DeepSpeech/native_client/convert_graphdef_memmapped_format \
 	--in_graph=${export_dir}/output_graph.pb \
 	--out_graph=${export_dir}/output_graph.pbmm
 
