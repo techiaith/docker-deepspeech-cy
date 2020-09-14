@@ -6,10 +6,11 @@ import os
 import shutil
 
 import wave
-from sox import Transformer
+import sox
 
 import pandas as pd
 import numpy as np
+
 import scipy.io.wavfile as wav
 
 from python_speech_features import mfcc
@@ -18,6 +19,9 @@ N_CONTEXT=9
 
 
 def downsample_wavfile(wavfile):
+    if sox.file_info.sample_rate(wavfile)==16000.0:
+        return
+
     temp_48kHz_wavfile = wavfile.replace(".wav","_48kHz.wav")
     shutil.move(wavfile, temp_48kHz_wavfile)
     transform_audio(temp_48kHz_wavfile, wavfile)
@@ -37,11 +41,11 @@ def convert_mp3(mp3file):
         return False
 
 
-
 def transform_audio(old_file, new_file):
-    tf = Transformer()
+    tf = sox.Transformer()
     tf.convert(samplerate=16000, n_channels=1)
     tf.build(old_file, new_file)
+
 
 def get_duration_wav(wavfile):
     f = wave.open(wavfile, 'r')

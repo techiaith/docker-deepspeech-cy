@@ -58,7 +58,7 @@ read -p "Enter best default beta: " beta
 echo "####################################################################################"
 echo "#### Generating package with optimal alpha and beta                             ####"
 echo "####################################################################################"
-python3 /DeepSpeech/data/lm/generate_package.py \
+/DeepSpeech/native_client/generate_scorer_package \
 	--alphabet "${alphabet_file_path}" \
 	--lm lm.binary \
 	--vocab vocab-50000.txt \
