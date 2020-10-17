@@ -4,7 +4,7 @@ FROM mozilla/deepspeech:$BRANCH
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
 	&& apt-get update && apt-get install -y git-lfs lame sox libsox-fmt-mp3 vim zip file locales-all \
 						unzip valgrind libffi-dev libssl-dev libxml2-dev \
-						cmake libboost-all-dev build-essential \
+						cmake libboost-all-dev build-essential ffmpeg \
 						libxslt1-dev libjpeg8-dev zlib1g-dev dos2unix \
 	&& apt-get clean \
 	&& git lfs install \
