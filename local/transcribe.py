@@ -10,6 +10,9 @@ import glob
 
 import json
 
+import srt
+from datetime import timedelta
+
 from praatio import tgio
 from utils.audio import downsample_wavfile
 
@@ -46,9 +49,30 @@ def convert_json_to_textgrid(wav_file_path, transcript_file_path):
         print ("Textgrid of transcription saved to %s" % textgrid_file_path)
 
 
+def convert_json_to_srt(transcript_file_path):
+    srt_file_path = transcript_file_path.replace(".tlog",".srt")
+    srt_segments = []
+    with open(transcript_file_path) as json_file:
+        json_data = json.load(json_file)
+        i=1;
+        for transcript in json_data:
+            start_seconds = float(transcript["start"] / 1000)
+            end_seconds = float(transcript["end"] / 1000)
+            start_delta=timedelta(seconds=start_seconds)
+            end_delta=timedelta(seconds=end_seconds)
+            srt_segments.append(srt.Subtitle(i, start=start_delta, end=end_delta, content=transcript["transcript"]))
+
+    str_string = srt.compose(srt_segments)
+    with open(srt_file_path, 'w', encoding='utf-8') as srt_file:
+        srt_file.write(str_string)
+
+    #print(str_string)
+
+
+
 def main(wav_file_path, **args):
 
-    cmd = "python3 /DeepSpeech/transcribe.py --src %s --checkpoint_dir %s --alphabet_config_path %s --scorer %s --force"
+    cmd = "python3 /DeepSpeech/transcribe.py --src %s --checkpoint_dir %s --alphabet_config_path %s --scorer %s --vad_aggressiveness 0 --force"
     cmd = cmd % (wav_file_path, CHECKPOINTS_DIR, ALPHABET_FILE_PATH, LANGUAGE_MODEL)
 
     downsample_wavfile(wav_file_path)
@@ -59,6 +83,7 @@ def main(wav_file_path, **args):
     transcript_file = wav_file_path.replace(".wav", ".tlog")
 
     convert_json_to_textgrid(wav_file_path, transcript_file)
+    convert_json_to_srt(transcript_file)
 
 
     

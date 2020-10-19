@@ -9,7 +9,7 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.d
 	&& apt-get clean \
 	&& git lfs install \
 	&& pip install sox wget sklearn pandas python_speech_features virtualenv \ 
-				   webrtcvad requests tqdm columnize praatio \
+				   webrtcvad requests tqdm columnize praatio srt \
 	&& rm -rf /var/lib/apt/lists/* 
 
 ENV LC_ALL cy_GB.UTF-8
