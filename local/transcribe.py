@@ -68,6 +68,22 @@ def convert_json_to_srt(transcript_file_path):
 
     #print(str_string)
 
+def copy_checkpoint():
+    print ("Copying checkpoint files to %s" % CHECKPOINTS_DIR)
+    src_files = os.listdir("/checkpoints/techiaith")
+    for f in src_files:
+        full_f = os.path.join("/checkpoints/techiaith",f)
+        if f.endswith(".tar.gz"): continue
+        shutil.copy(full_f, CHECKPOINTS_DIR)
+
+def ensure_checkpoint():
+
+    if not os.path.exists(CHECKPOINTS_DIR):
+        os.mkdir(CHECKPOINTS_DIR)
+        copy_checkpoint()
+    elif not os.listdir(CHECKPOINTS_DIR):
+        # checkpoints folder is empty. Copy default techiaith cy
+        copy_checkpoint()
 
 
 def main(wav_file_path, **args):
@@ -76,7 +92,9 @@ def main(wav_file_path, **args):
     cmd = cmd % (wav_file_path, CHECKPOINTS_DIR, ALPHABET_FILE_PATH, LANGUAGE_MODEL)
 
     downsample_wavfile(wav_file_path)
-    
+
+    ensure_checkpoint()
+
     import_process = subprocess.Popen(shlex.split(cmd))
     import_process.wait()
 
