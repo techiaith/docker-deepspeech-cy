@@ -60,6 +60,7 @@ clean:
 	sudo rm -rf DeepSpeech
 	sudo rm -rf homedir
 	sudo rm -rf checkpoints
+	sudo rm -rf models
 
 
 stop:
