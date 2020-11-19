@@ -23,7 +23,7 @@ fi
 ###
 model_name='bangor-welsh'
 model_language='cy-Latn-GB'
-model_license='CC-BY-4.0'
+model_license='MPL'
 model_description='Welsh language acoustic model trained using transfer learning and approximately 90hrs of validated and other Welsh speech data from the Mozilla CommonVoice June 2020 release.'
 
 model_author='techiaith'

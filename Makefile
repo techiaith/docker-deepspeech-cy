@@ -1,7 +1,7 @@
 default: build
 
-DEEPSPEECH_RELEASE := 0.8.2
-TECHIAITH_RELEASE := 20.09
+DEEPSPEECH_RELEASE := 0.9.1
+TECHIAITH_RELEASE := 20.12
 
 run: 
 	docker run --gpus all --name techiaith-deepspeech-v${DEEPSPEECH_RELEASE}-${USER} -it \
@@ -20,7 +20,6 @@ build:
 	
 	if [ ! -d "DeepSpeech" ]; then \
 	    git clone https://github.com/mozilla/DeepSpeech.git; \
-	    cp Dockerfile.train.tmpl DeepSpeech/; \
 	fi
 	cd DeepSpeech && make Dockerfile.train DEEPSPEECH_SHA=tags/v${DEEPSPEECH_RELEASE} && docker build --rm -t mozilla/deepspeech:v${DEEPSPEECH_RELEASE} -f Dockerfile.train .
 	if [ ! -d "checkpoints/mozilla" ]; then \
