@@ -13,7 +13,9 @@ from sklearn.model_selection import train_test_split
 import argparse
 
 def create_kfolds(csvfile, dest_dir, k):
-    print (csvfile)
+    
+    print ("Splitting %s into kfolds" % csvfile)
+
     kf = KFold(n_splits=k, shuffle=True, random_state=2)
 
     try:
@@ -34,7 +36,8 @@ def create_kfolds(csvfile, dest_dir, k):
         test_df = pd.DataFrame(speech_corpus_df.iloc[test_indexes])
         test_df.to_csv(test_file, index=False, sep=',', encoding='utf-8')
 
-        print ('train: %s, test %s' % (train_indexes, test_indexes))
+        #print ('train: %s, test %s' % (train_indexes, test_indexes))
+
 
 
 def main(csvfile, dest_dir, k, **args):
