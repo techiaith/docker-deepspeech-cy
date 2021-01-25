@@ -1,7 +1,7 @@
 default: build
 
 DEEPSPEECH_RELEASE := 0.9.1
-TECHIAITH_RELEASE := 20.12
+TECHIAITH_RELEASE := 21.01
 
 run: 
 	docker run --gpus all --name techiaith-deepspeech-v${DEEPSPEECH_RELEASE}-${USER} -it \

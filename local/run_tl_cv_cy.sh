@@ -24,7 +24,7 @@ fi
 model_name='bangor-welsh'
 model_language='cy-Latn-GB'
 model_license='MPL'
-model_description='Welsh language acoustic model trained using transfer learning and approximately 90hrs of validated and other Welsh speech data from the Mozilla CommonVoice June 2020 release.'
+model_description='Welsh language acoustic model trained using transfer learning and approximately 90hrs of validated and other Welsh speech data from the Mozilla CommonVoice December 2020 release.'
 
 model_author='techiaith'
 model_contact_info='techiaith@bangor.ac.uk'
@@ -43,7 +43,7 @@ echo "##########################################################################
 echo
 
 ###
-train_files=${csv_dir}/validated.clean.csv,${csv_dir}/other.clean.csv
+train_files=${csv_dir}/validated.csv,${csv_dir}/other.csv
 alphabet_cy_file=/DeepSpeech/bin/bangor_welsh/alphabet.txt
 
 checkpoint_dir=/checkpoints
