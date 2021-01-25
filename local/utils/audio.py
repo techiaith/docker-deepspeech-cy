@@ -20,7 +20,9 @@ N_CONTEXT=9
 
 def downsample_wavfile(wavfile):
     if sox.file_info.sample_rate(wavfile)==16000.0:
-        return
+        return True
+
+    print ("Downsampliing %s" % wavfile)
 
     temp_48kHz_wavfile = wavfile.replace(".wav","_48kHz.wav")
     shutil.move(wavfile, temp_48kHz_wavfile)

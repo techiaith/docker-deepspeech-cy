@@ -7,6 +7,8 @@ source_text_file=''
 output_dir=''
 test_files=''
 
+VOCAB_SIZE=50000
+
 alphabet_file_path=/DeepSpeech/bin/bangor_welsh/alphabet.txt
 checkpoint_cy_dir=/checkpoints/cy
 
@@ -40,7 +42,7 @@ if [ -z "$output_dir" ]; then
    	exit 2
 fi
 
-
+mkdir -p ${output_dir}
 cd ${output_dir}
 
 set +x
@@ -49,17 +51,18 @@ echo "#### Generating binary language model                                     
 echo "####################################################################################"
 set -x
 python /DeepSpeech/data/lm/generate_lm.py \
-	--input_txt "${source_text_file}" \
+  --input_txt "${source_text_file}" \
   --output_dir . \
-  --top_k 50000 \
+  --top_k ${VOCAB_SIZE} \
   --kenlm_bins '/DeepSpeech/native_client/kenlm/build/bin/' \
-  --arpa_order 5 \
+  --arpa_order 6 \
   --max_arpa_memory '85%' \
   --arpa_prune "0|0|1" \
   --binary_a_bits 255 \
   --binary_q_bits 8 \
   --binary_type 'trie' \
   --discount_fallback
+
 
 
 set +x
@@ -81,7 +84,7 @@ set -x
 /DeepSpeech/native_client/generate_scorer_package \
 	--alphabet "${alphabet_file_path}" \
 	--lm lm.binary \
-	--vocab vocab-50000.txt \
+	--vocab vocab-${VOCAB_SIZE}.txt \
 	--package kenlm.scorer \
  	--default_alpha 0.75 \
 	--default_beta 1.85

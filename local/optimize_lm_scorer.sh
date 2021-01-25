@@ -6,6 +6,8 @@ set -o pipefail
 lm_dir=''
 test_files=''
 
+VOCAB_SIZE=50000
+
 alphabet_file_path=/DeepSpeech/bin/bangor_welsh/alphabet.txt
 
 while getopts ":l:t:" opt; do
@@ -61,8 +63,8 @@ echo "##########################################################################
 /DeepSpeech/native_client/generate_scorer_package \
 	--alphabet "${alphabet_file_path}" \
 	--lm lm.binary \
-	--vocab vocab-50000.txt \
-  --package kenlm.scorer \
+	--vocab vocab-${VOCAB_SIZE}.txt \
+  	--package kenlm.scorer \
 	--default_alpha ${alpha} \
 	--default_beta ${beta}
 
