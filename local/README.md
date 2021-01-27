@@ -6,6 +6,8 @@ Mae dogfennaeth gan Mozilla ar DeepSpeech ar gael fan hyn: https://deepspeech.re
 
 Mae'r sgriptiau canlynol yn cysylltu ag yn hwyluso'r holl gamau a ddilynir er mwyn hyfforddi, gynhyrchu a gwerthuso modelau adnabod lleferydd Cymraeg gyda DeepSpeech Mozilla. Defnyddir setiau Cymraeg o wefan CommonVoice Mozilla fel prif ffynhonnell data hyfforddi. Gydag adnoddau bellach gan Uned Technolegau Iaith, Prifysgol Bangor, mae'r modelau'n addas ar gyfer rhaglenni cynorthwyydd digidol (e.e. Macsen) a thrawsgrifiwr gyffredinol. 
 
+Mae modelau sydd wedi'i hyfforddi'n barod ar gael o'r dudalen cyhoeddi: https://github.com/techiaith/docker-deepspeech-cy/releases
+
 
 ## Rhagofynion
 

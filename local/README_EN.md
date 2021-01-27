@@ -6,10 +6,13 @@ Documentation by Mozilla on DeepSpeech can be found here: https://deepspeech.rea
 
 The following scripts join up all the steps that are needed to train, generate and evaluate models for Welsh language speech recognition with Mozilla's DeepSpeech. The Welsh datasets from Mozilla's CommonVoice website are the primary resource for training. With some further resources from Bangor University's Language Technologies Unit, the models are viable for voice assistant (e.g. Macsen) and a transcriber applications. 
 
+Pre-trained models however are available from the release page: https://github.com/techiaith/docker-deepspeech-cy/releases
 
 ## Prerequisites
 
 Download the Welsh speech data from the Mozilla CommonVoice website: https://voice.mozilla.org/cy/datasets which is provided as a single large compressed file (`.tar.gz`). Save the file into the `data` ffolder. 
+
+Download also the OSCAR text corpus from https://oscar-public.huma-num.fr/shuff-orig/cy which contains Welsh language texts collected from the world wide web. You will need to register for the website to permit downloading. Save the file in the `data/oscar` folder.
 
 
 ## Prepare Data
@@ -17,13 +20,13 @@ Download the Welsh speech data from the Mozilla CommonVoice website: https://voi
 ### `import_audio_archive.py`
 
 ```shell
-root@c67722092f2e:/DeepSpeech# bin/bangor_welsh/import_audio_archive.py --archive /data/cy-v4.tar.gz --target_dir /data/commonvoice-cy-v5-20200622/
+root@c67722092f2e:/DeepSpeech# bin/bangor_welsh/import_audio_archive.py --archive /data/commonvoice/cy.tar.gz --target_dir /data/commonvoice/
 ```
 
 ### `analyze_audio.py`
 
 ```shell
-root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/analyze_audio.py --csv_dir /data/commonvoice-cy-v5-20200622/clips/
+root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/analyze_audio.py --csv_dir /data/commonvoice/clips/
 /data/commonvoice-cy-v5-20200622/clips/dev.csv                0.91 hours      (3269.93 seconds)
 /data/commonvoice-cy-v5-20200622/clips/test.csv               0.98 hours      (3514.49 seconds)
 /data/commonvoice-cy-v5-20200622/clips/train.csv              1.09 hours      (3941.04 seconds)
@@ -43,7 +46,7 @@ Use the following script to train an acoustic model. The `-a` argument needs to 
 This script uses DeepSpeech's transfer learning feature in order to benefit from Mozilla's English acoustic models, trained on much larger speech data collections, as a starting point for training Welsh speech recognition.
 
 ```shell
-root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh -a /data/commonvoice-cy-v5-20200622/clips
+root@c67722092f2e:/DeepSpeech# /DeepSpeech/bin/bangor_welsh/run_tl_cv_cy.sh -a /data/commonvoice/clips
 ```
 
 
@@ -57,22 +60,30 @@ An acoustic model on its own, despite having used transfer learning techniques, 
 
 You will need further resources from Bangor University in order to train  DeepSpeech with language models for various Welsh language applications. 
 
-The following script will download further recordings and/or text corpora that facilitate Welsh speech recognition for a simple voice assistant ('macsen') or a transcriber ('transcribe') (as requested in the `-d` argument).
+The following script will download further recordings and/or text corpora that facilitate Welsh speech recognition for a simple voice assistant or a transcriber. You should have downloaded the OSCAR corpus beforehand in order to use the following command:
 
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_bangor_resources.py -t /data/macsen -d macsen
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/import_bangor_resources.py -o /data/oscar/cy.txt.gzip -c /data/commonvoice/validated.tsv
 ```
+
+The script filters unsuitable texts for training process and creates a 'clean' (`.clean`) version of the corpus.
 
 
 ### `build_lm_scorer.sh`
 
 This is the main script for training a language model and evaluation with the acoustic model from the previous steps in training DeepSpeech.
 
-
+##### Training voice assistant Macsen's language model:
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/build_lm_scorer.sh -s /data/texts/macsen/corpus.clean.txt -o /data/texts/macsen/ -t /data/macsen/deepspeech.csv
+root@6a88b0d59848:/DeepSpeech# ./bin/bangor_welsh/build_lm_scorer.sh -s /data/bangor/lm-data/macsen/corpus.clean.txt -t /data/bangor/testsets/data/macsen/deepspeech.csv -o /data/bangor/lm/macsen
 ```
+
+##### Training transcriber language model:
+```shell
+root@6a88b0d59848:/DeepSpeech# ./bin/bangor_welsh/build_lm_scorer.sh -s /data/bangor/lm-data/oscar/corpus.clean.txt -t /data/bangor/testsets/data/trawsgrifio/deepspeech.csv -o /data/bangor/lm/trawsgrifio
+``` 
+
 
 
 ### `optimize_lm_scorer.sh`
@@ -82,5 +93,5 @@ This script will experiment with various language model parameters until it find
 The process can take a long time - hours or possibly day or two - since it will experiment many thousands of times. In the end, the script will report on two optimal values and ask you to enter them for final inclusion in the finally packaged language model. (`kenlm.scorer` in the directory specified by the `-o` script argument)
 
 ```shell
-root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/optimize_lm_scorer.sh -l /data/texts/macsen -t /data/macsen/deepspeech.csv
+root@6a88b0d59848:/DeepSpeech# bin/bangor_welsh/optimize_lm_scorer.sh -l /data/bangor/lm/mascen -t /data/bangor/testsets/data/macsen/deepspeech.csv
 ```
